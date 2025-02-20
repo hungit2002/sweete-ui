@@ -1,16 +1,16 @@
-"use client"
+"use client";
 import isAuthenticated from "@/Utils/Auth";
 import { redirect } from "next/navigation";
-import { useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 
-export default function Home() {
+export default function Index() {
   useLayoutEffect(() => {
     const isAuth = isAuthenticated();
-    if(!isAuth){
-      redirect("/login")
+    if (!isAuth) {
+      redirect("/login");
+    } else {
+      redirect("/home");
     }
-  }, [])
-  return (
-    <div>Home page</div>
-  );
+  }, []);
+  return <div></div>;
 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const sweeteAxiosInstance = axios.create({
-  baseURL: "https://sweete.id.vn", // Replace with your API base URL
+const sweeteUserAxiosInstance = axios.create({
+  baseURL: "http://localhost:9001", // Replace with your API base URL
   timeout: 10000, // Optional timeout for requests
   headers: {
     "Content-Type": "application/json",
@@ -9,7 +9,7 @@ const sweeteAxiosInstance = axios.create({
 });
 
 // Request interceptor to add the token to each request
-sweeteAxiosInstance.interceptors.request.use(
+sweeteUserAxiosInstance.interceptors.request.use(
   (config) => {
     // Get token from localStorage
     const token =
@@ -27,4 +27,4 @@ sweeteAxiosInstance.interceptors.request.use(
   }
 );
 
-export default sweeteAxiosInstance;
+export default sweeteUserAxiosInstance;
