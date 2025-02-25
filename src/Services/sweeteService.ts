@@ -13,7 +13,7 @@ sweeteUserAxiosInstance.interceptors.request.use(
   (config) => {
     // Get token from localStorage
     const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
     // If token exists, add it to the Authorization header
     if (token) {

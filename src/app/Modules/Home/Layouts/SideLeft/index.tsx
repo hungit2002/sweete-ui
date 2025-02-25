@@ -38,6 +38,7 @@ function SideLeft({userInfo}: { userInfo: UserInfoLS }) {
                          alt="User Avatar"/>
                 }
                 label={userInfo?.fullname || "Fullname"}
+                userID = {userInfo?.id}
             />
 
             {/* Render danh sách menu */}

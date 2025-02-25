@@ -219,7 +219,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
           />
         </div>
       </div>
-      // Modal create feed
+      {/* Modal create feed */}
       <ModalDefault
         header={
           <div className={"flex"}>
@@ -430,7 +430,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
         show={showModalCreateFeed}
         handleClose={handleCloseModalCreateFeed}
       />
-      // Modal choose status feed
+      {/* Modal choose status feed */}
       <ModalDefault
         header={
           <div className={"flex"}>
@@ -522,7 +522,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
         show={showModalChooseStatusFeed}
         handleClose={handleCloseModalChooseStatusFeed}
       />
-      // Modal choose friend extract
+      {/* Modal choose friend extract */}
       <ModalDefault
         header={
           <div className={"flex"}>
