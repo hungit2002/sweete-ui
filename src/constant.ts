@@ -60,3 +60,5 @@ export const LIST_STATUS_FEEDS: FEED_STATUS[] = [{
     id : FEED_STATUS_CUSTOM,
     value: FEED_STATUS_CUSTOM
 }]
+
+export const AvatarDefault = "https://res.cloudinary.com/dkxleddkw/image/upload/v1740661576/uploads/images.jpg"

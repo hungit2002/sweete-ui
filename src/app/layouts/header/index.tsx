@@ -13,6 +13,7 @@ import { redirect, usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import Tippy from "@tippyjs/react/headless";
 import { useDebounce } from "use-debounce";
+import AvatarUser from "@/app/components/avatar";
 
 export default function Header() {
   const path = usePathname();
@@ -35,7 +36,7 @@ export default function Header() {
     setUserInfo(user);
   }, []);
   return (
-    <div className="h-[56px] border-b flex items-center justify-between px-2">
+    <div className="h-[56px] border-b flex items-center justify-between px-2 bg-white">
       <div className="flex items-center gap-2">
         <div className="text-3xl font-extrabold text-white bg-default border rounded-full p-2 w-[47px] h-[47px] flex justify-center items-center">
           S
@@ -127,14 +128,7 @@ export default function Header() {
           <FontAwesomeIcon icon={faBell} size="lg" color="#65686c" />
         </div>
         <div className="w-[40px] h-[40px] bg-infos rounded-full flex justify-center items-center">
-          <img
-            src={
-              `${userInfo?.avatar}` ||
-              "https://www.svgrepo.com/show/452030/avatar-default.svg"
-            }
-            alt="avatar"
-            className="object-cover rounded-full w-100 h-100"
-          />
+          <AvatarUser path={userInfo?.avatar}/>
         </div>
       </div>
     </div>

@@ -1,18 +1,20 @@
 import React from 'react';
-import {UserInfoLS} from "@/models";
+import { UserInfoLS } from "@/models";
+import { AvatarDefault } from '@/constant';
 
 function AvatarUser(props: {
-    userInfo: UserInfoLS,
+    userInfo?: UserInfoLS,
+    path: string,
+    shape?: "circle" | "square",
 }) {
-    const {userInfo} = props;
+    const { userInfo, path, shape = "circle" } = props;
     return (
         <img
             src={
-                `${userInfo?.avatar}` ||
-                "https://www.svgrepo.com/show/452030/avatar-default.svg"
+                `${path}` || AvatarDefault
             }
             alt="avatar"
-            className="object-cover rounded-full w-100 h-100"
+            className={`object-cover ${shape !== "circle" ? "rounded-2" : "rounded-full"} w-100 h-100`}
         />
     );
 }

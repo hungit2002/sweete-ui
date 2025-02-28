@@ -149,14 +149,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
         <div className="flex flex-col gap-2 shadow-md border rounded-xl px-3 py-2">
           <div className="flex gap-2 items-center">
             <div className="w-[40px] h-[40px] bg-infos rounded-full flex justify-center items-center">
-              <img
-                src={
-                  `${userInfo?.avatar}` ||
-                  "https://www.svgrepo.com/show/452030/avatar-default.svg"
-                }
-                alt="avatar"
-                className="object-cover rounded-full w-100 h-100"
-              />
+              <AvatarUser path={userInfo?.avatar}/>
             </div>
             <div
               onClick={handleClickCreateFeed}
@@ -230,7 +223,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
           <div>
             <div className={"flex items-center gap-2 px-3"}>
               <div className={"w-[46px] h-[46px]"}>
-                <AvatarUser userInfo={userInfo} />
+                <AvatarUser path={userInfo?.avatar} />
               </div>
               <div>
                 <p className={"font-bold"}>{userInfo?.fullname}</p>
@@ -558,13 +551,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
                     <div className="flex items-center gap-2">
                       <div className="w-[40px] h-[40px] border rounded-full">
                         <AvatarUser
-                          userInfo={{
-                            id: 1,
-                            fullname: "hung tran duy",
-                            email: "h@gmail.com",
-                            avatar: "",
-                            phone: "099786857",
-                          }}
+                          path={userInfo?.avatar}
                         />
                       </div>
                       <div>
@@ -607,7 +594,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
                             }}
                           >
                             <div className="w-[20px] h-[20px] border rounded-full">
-                              <AvatarUser userInfo={fb} />
+                              <AvatarUser path={fb?.avatar}/>
                             </div>
                             <p className="text-blue-800">{fb.fullname}</p>
                             <FontAwesomeIcon
