@@ -54,7 +54,7 @@ export default function UserDetail() {
                             <div className='w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] rounded-full bg-white'>
                                 <AvatarUser path={userInfo?.avatar}/>
                             </div>
-                            <div className='flex flex-col gap-0 items-center'>
+                            <div className='flex flex-col gap-0 items-center lg:items-start'>
                                 <p className='font-bold text-xl'>{userInfo?.full_name}</p>
                                 <p className='font-thin text-sm mb-1'>{userInfo?.friends?.length} friends</p>
                                 <div className='flex items-center gap-1 mb-1'>
