@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
-import Tippy from "@tippyjs/react/headless";
 import { useDebounce } from "use-debounce";
 import AvatarUser from "@/app/components/avatar";
 
@@ -41,31 +40,6 @@ export default function Header() {
         <div className="text-3xl font-extrabold text-white bg-default border rounded-full p-2 w-[47px] h-[47px] flex justify-center items-center">
           S
         </div>
-        {
-          <Tippy
-            render={() => (
-              <div className="bg-white p-2 rounded-md shadow-md">
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="w-full h-[40px] border rounded-md p-2 text-sm focus:outline-none"
-                  value={inputSearch}
-                  onChange={(e) => setInputSearch(e.target.value)}
-                />
-              </div>
-            )}
-            interactive
-            visible={showSearch}
-            onClickOutside={() => setShowSearch(false)}
-          >
-            <div
-              className="w-[40px] h-[40px] bg-infos border rounded-full p-2 flex justify-center items-center cursor-pointer"
-              onClick={() => setShowSearch(!showSearch)}
-            >
-              <FontAwesomeIcon icon={faSearch} size="lg" color="#65686c" />
-            </div>
-          </Tippy>
-        }
       </div>
       <ul className="flex gap-2 items-center h-100 py-1">
         <li className="min-w-[90px] h-100 flex items-center justify-center hover:bg-gray-200 cursor-pointer rounded-md relative">
@@ -78,11 +52,11 @@ export default function Header() {
               <FontAwesomeIcon
                 icon={faHome}
                 size="lg"
-                color={path === "/home" ? "#F06060" : "#65686c"}
+                color={path === "/(home)" ? "#F06060" : "#65686c"}
               />
             </div>
           </Link>
-          {path === "/home" && (
+          {path === "/(home)" && (
             <div className="absolute -bottom-0 h-[2px] bg-default w-full"></div>
           )}
         </li>

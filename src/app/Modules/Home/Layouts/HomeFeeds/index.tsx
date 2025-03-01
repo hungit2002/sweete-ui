@@ -1,33 +1,26 @@
 import React, {useEffect, useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faCaretDown, faCartPlus,
+    faCaretDown,
     faEarth,
     faEllipsis,
     faGift,
     faImages,
     faLocationDot,
-    faMinus,
     faMinusCircle,
-    faPalette, faPlus,
+    faPalette,
+    faPlus,
     faSmile,
     faSmileBeam,
     faUserTag,
     faVideo,
     faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import News from "@/app/Modules/Home/News";
 import Feed from "@/app/Modules/Home/Feeds/Feed";
 import {FEED_STATUS, UserInfoLS} from "@/models";
 import AvatarUser from "@/app/components/avatar";
-import {
-    BACKGROUND_FEEDS,
-    EMOJIS,
-    FEED_STATUS_FRIEND_EXTRACT,
-    LIST_STATUS_FEEDS,
-} from "@/constant";
+import {BACKGROUND_FEEDS, EMOJIS, FEED_STATUS_FRIEND_EXTRACT, LIST_STATUS_FEEDS,} from "@/constant";
 import ModalDefault from "@/app/components/modal/ModalDefault";
-import Tippy from "@tippyjs/react/headless";
 import {useForm} from "react-hook-form";
 
 interface IFromRadio {
@@ -92,12 +85,12 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
     const {register, handleSubmit} = useForm<IFromRadio>();
 
     const handleClick = () => {
-        if (fileInputRef.current){
+        if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     };
 
-    const handleFileChange = (event:any) => {
+    const handleFileChange = (event: any) => {
         const files = event.target.files;
         if (files.length > 0) {
             console.log(files)
@@ -172,8 +165,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
                             onClick={handleClickCreateFeed}
                             className="text-gray-600 py-2 px-3 hover:bg-gray-200 cursor-pointer bg-infos rounded-3xl w-full"
                         >
-                            {localStorage.getItem("user_info") &&
-                                JSON.parse(localStorage.getItem("user_info") || "{}")?.fullname}
+                            {userInfo?.fullname}
                             , what are you thinking?
                         </div>
                     </div>
@@ -196,40 +188,9 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
                         </div>
                     </div>
                 </div>
-                <News userInfo={userInfo}/>
+                {/*<News userInfo={userInfo}/>*/}
                 <div className={"mt-3 flex flex-col gap-3"}>
-                    <Feed
-                        text={
-                            "Những thông tin về tiến độ của các dự án nhà ở xã hội ngay trong những ngày\n" +
-                            "                        đầu năm mới này đã thổi một luồng gió hứng khởi, tích cực đến thị trường bất\n" +
-                            "                        động sản. Nhiều chuyên gia nhận định, sự xuất hiện của các căn hộ nhà ở xã\n" +
-                            "                        hội với giá bán chỉ bằng 1/2, thậm chí 1/3 so với nhà ở thương mại, sẽ tạo\n" +
-                            "                        sự lan tỏa, phần nào giúp bình ổn giá chung cư."
-                        }
-                        maxLength={200}
-                        hashtags={["home", "social"]}
-                        images={[
-                            {
-                                url: "https://scontent.fhan2-5.fna.fbcdn.net/v/t39.30808-6/479494592_943006054681164_5352145709286615891_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=1&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeFZkf5dZmyd_wl0MFV3aeN5TXL95fOQfMlNcv3l85B8ydKZGjWRLAdttk-f01vzMZ4A8paY9ag-6vuw5-pU7w9r&_nc_ohc=ESNoBk3y7q8Q7kNvgG2aKFe&_nc_oc=Adg0o67g87lShkjrmlrmWsDM8eWlNeUE2RFJMNbKmySn6yXbUY-joRcJPRjD8NnXPB8&_nc_zt=23&_nc_ht=scontent.fhan2-5.fna&_nc_gid=AFlEsl5rqAIaww2J-rQXgzj&oh=00_AYA9k9pvYVDqA5-ZsEtYHg4OcdiS-cUxDkpNDNqUII-TJg&oe=67B56516",
-                            },
-                        ]}
-                    />
-                    <Feed
-                        text={
-                            "Những thông tin về tiến độ của các dự án nhà ở xã hội ngay trong những ngày\n" +
-                            "                        đầu năm mới này đã thổi một luồng gió hứng khởi, tích cực đến thị trường bất\n" +
-                            "                        động sản. Nhiều chuyên gia nhận định, sự xuất hiện của các căn hộ nhà ở xã\n" +
-                            "                        hội với giá bán chỉ bằng 1/2, thậm chí 1/3 so với nhà ở thương mại, sẽ tạo\n" +
-                            "                        sự lan tỏa, phần nào giúp bình ổn giá chung cư."
-                        }
-                        maxLength={200}
-                        hashtags={["home", "social"]}
-                        images={[
-                            {
-                                url: "https://scontent.fhan2-5.fna.fbcdn.net/v/t39.30808-6/479494592_943006054681164_5352145709286615891_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=1&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeFZkf5dZmyd_wl0MFV3aeN5TXL95fOQfMlNcv3l85B8ydKZGjWRLAdttk-f01vzMZ4A8paY9ag-6vuw5-pU7w9r&_nc_ohc=ESNoBk3y7q8Q7kNvgG2aKFe&_nc_oc=Adg0o67g87lShkjrmlrmWsDM8eWlNeUE2RFJMNbKmySn6yXbUY-joRcJPRjD8NnXPB8&_nc_zt=23&_nc_ht=scontent.fhan2-5.fna&_nc_gid=AFlEsl5rqAIaww2J-rQXgzj&oh=00_AYA9k9pvYVDqA5-ZsEtYHg4OcdiS-cUxDkpNDNqUII-TJg&oe=67B56516",
-                            },
-                        ]}
-                    />
+
                 </div>
             </div>
             {/* Modal create feed */}
@@ -345,42 +306,7 @@ function HomeFeeds(props: { userInfo: UserInfoLS }) {
                                     )}
                                 </div>
                                 <div className="flex flex-wrap gap-1">
-                                    <Tippy
-                                        interactive={true}
-                                        visible={showPickerEmoji}
-                                        onClickOutside={() => setShowPickerEmoji(false)}
-                                        render={(attrs: any) => (
-                                            <div
-                                                {...attrs}
-                                                tabIndex={-1}
-                                                className={
-                                                    "bg-white border p-2 rounded shadow w-[300px] h-[200px]"
-                                                }
-                                            >
-                                                {EMOJIS.map((emoji: string, index: number) => (
-                                                    <button
-                                                        key={index}
-                                                        className="p-1 text-lg hover:bg-gray-200 rounded"
-                                                        onClick={() => {
-                                                            insertEmoji(emoji);
-                                                        }}
-                                                    >
-                                                        {emoji}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    >
-                                        <div className="px-2 py-1 rounded cursor-pointer bg-white border">
-                                            <FontAwesomeIcon
-                                                icon={faSmile}
-                                                size={"lg"}
-                                                className={"cursor-pointer"}
-                                                color={"orange"}
-                                                onClick={() => setShowPickerEmoji(!showPickerEmoji)}
-                                            />
-                                        </div>
-                                    </Tippy>
+
                                 </div>
                             </div>
                         </div>

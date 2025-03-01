@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
-import "tippy.js/dist/tippy.css";
 import { Bounce, Slide, ToastContainer, Zoom } from 'react-toastify';
 
 const nunito_init = Nunito({
