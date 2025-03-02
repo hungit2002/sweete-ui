@@ -17,7 +17,14 @@ export const BACKGROUND_FEEDS = [
     { bg: "linear-gradient(to right, #8e2de2, #4a00e0)", text: "white" }
 ]
 
-export const EMOJIS = ["😀", "😂", "🥰", "😎", "😭", "👍"]
+export const EMOJIS = [
+    "😀", "😂", "🥰", "😎", "😭", "👍",
+    "😊", "😍", "🤣", "😅", "😁", "😢", "😜", "🤔", "🤩", "😇",
+    "😡", "🥺", "😋", "🤗", "😱", "🙃", "😏", "😒", "😌", "🤭",
+    "😃", "😆", "😝", "🤤", "🥳", "🥴", "😤", "😵", "🤯", "🤠",
+    "👀", "👋", "🙌", "👏", "💪", "🙏", "🔥", "💯", "🎉", "🎊",
+    "🎶", "💖", "💔", "💕", "💗", "💙", "💚", "💛", "🖤", "💜"
+];
 
 export const FEED_STATUS_PUBLIC = "PUBLIC";
 export const FEED_STATUS_FRIEND = "FRIEND";

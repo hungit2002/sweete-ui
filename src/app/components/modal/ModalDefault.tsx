@@ -7,8 +7,9 @@ export default function ModalDefault(props: {
   header?: any,
   body?: any,
   footer?: any
+  size?: "sm" | "lg" | "xl"
 }) {
-  const { header, body, footer, show, handleClose } = props
+  const { header, body, footer, show, handleClose,size } = props
   return (
     <Modal
       show={show}
@@ -16,6 +17,7 @@ export default function ModalDefault(props: {
       backdrop="static"
       keyboard={false}
       centered
+      size={size}
     >
       {
         header && <Modal.Header closeButton>
