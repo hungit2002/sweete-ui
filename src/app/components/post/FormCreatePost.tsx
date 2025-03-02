@@ -1,5 +1,5 @@
 import AvatarUser from "@/app/components/avatar";
-import { UserInfoLS } from "@/models";
+import { UserInfoLS, UserInfoMD } from "@/models";
 import {
     faImages,
     faSmileBeam,
@@ -12,6 +12,8 @@ import ModalChooseStatusFeed from "./Modals/ModalChooseStatusFeed";
 import ModalCreateFeed from "./Modals/ModalCreateFeed";
 import ModalEditImages from "./Modals/ModalEditImages";
 import ModalTagFriends from "./Modals/ModalTagFriends";
+import ModalTagFriendsOnPost from "./Modals/ModalTagFriendsOnPost";
+import ModalFeeling from "./Modals/ModalFeeling";
 
 export default function FormCreatePost(props: {
     userInfo: UserInfoLS
@@ -28,6 +30,11 @@ export default function FormCreatePost(props: {
         useState<boolean>(false);
     const [showModalTagFriends, setShowModalTagFriends] =
         useState<boolean>(false);
+    const [showModalTagFriendsOnPost, setShowModalTagFriendsOnPost] =
+        useState<boolean>(false);
+    const [showModalFeeling, setShowModalFeeling] =
+        useState<boolean>(false);
+
     const [currentImage, setCurrentImage] = useState<any>(null)
 
     const [showAddImageToFeed, setShowAddImageToFeed] = useState<boolean>(false)
@@ -36,10 +43,10 @@ export default function FormCreatePost(props: {
         bg: string;
         text: string;
     }>({ bg: "", text: "text-gray-900" });
-
+    const [feeling, setFeeling] = useState<any>(null);
     const [message, setMessage] = useState<string>("");
     const [images, setImages] = useState<any>([]);
-
+    const [friendTagsPost, setFriendTagsPost] = useState<UserInfoMD[]>([]);
     const handleClickCreateFeed = () => {
         setShowModalCreateFeed(true);
     };
@@ -100,10 +107,13 @@ export default function FormCreatePost(props: {
                     setShowModalChooseStatusFeed={setShowModalChooseStatusFeed}
                     setShowModalCreateFeed={setShowModalCreateFeed}
                     setShowModalEditImages={setShowModalEditImages}
+                    setShowModalTagFriendsOnPost={setShowModalTagFriendsOnPost}
                     showAddImageToFeed={showAddImageToFeed}
                     showChooseBg={showChooseBg}
                     showModalCreateFeed={showModalCreateFeed}
-
+                    setShowModalFeeling={setShowModalFeeling}
+                    feeling={feeling}
+                    friendTagsPost={friendTagsPost}
                 />
             }
 
@@ -145,6 +155,26 @@ export default function FormCreatePost(props: {
                     setShowModalEditImages={setShowModalEditImages}
                     setShowModalTagFriends={setShowModalTagFriends}
                     showModalTagFriends={showModalTagFriends}
+                />
+            }
+
+            {
+                showModalTagFriendsOnPost && <ModalTagFriendsOnPost
+                    userInfo={userInfo}
+                    showModalTagFriendOnPost={showModalTagFriendsOnPost}
+                    setShowModalCreateFeed={setShowModalCreateFeed}
+                    setShowModalTagFriendOnPost={setShowModalTagFriendsOnPost}
+                    setFriendTagsPost={setFriendTagsPost}
+                    friendTagsPost={friendTagsPost}
+                />
+            }
+            {
+                showModalFeeling && <ModalFeeling
+                    setFeeling={setFeeling}
+                    userInfo={userInfo}
+                    showModalFeeling={showModalFeeling}
+                    setShowModelFeeling={setShowModalFeeling}
+                    setShowModalCreateFeed={setShowModalCreateFeed}
                 />
             }
         </>

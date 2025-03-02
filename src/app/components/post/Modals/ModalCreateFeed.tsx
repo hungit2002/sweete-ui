@@ -3,9 +3,9 @@ import ModalDefault from '../../modal/ModalDefault';
 import AvatarUser from '../../avatar';
 import { faCaretDown, faEarth, faEllipsis, faGift, faImages, faLocationDot, faPalette, faPencil, faPlus, faSmile, faUserTag, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { BACKGROUND_FEEDS, EMOJIS } from '@/constant';
+import { BACKGROUND_FEEDS, EMOJIS, Feeling } from '@/constant';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
-import { UserInfoLS } from '@/models';
+import { UserInfoLS, UserInfoMD } from '@/models';
 import PostImages from '../../PostImages/PostImages';
 
 export default function ModalCreateFeed(props: {
@@ -22,7 +22,10 @@ export default function ModalCreateFeed(props: {
     setShowModalChooseStatusFeed: any,
     showAddImageToFeed: boolean,
     setShowAddImageToFeed: any,
-
+    setShowModalTagFriendsOnPost: any,
+    setShowModalFeeling: any,
+    feeling: Feeling,
+    friendTagsPost: any,
     images: any,
     setImages: any,
 
@@ -31,10 +34,10 @@ export default function ModalCreateFeed(props: {
 
     setSelectedBg: any,
 }) {
-    const { 
-        userInfo, 
-        selectedBg, 
-        message, 
+    const {
+        userInfo,
+        selectedBg,
+        message,
         setMessage,
         showModalCreateFeed,
         setShowModalCreateFeed,
@@ -42,6 +45,10 @@ export default function ModalCreateFeed(props: {
         setShowModalChooseStatusFeed,
         showAddImageToFeed,
         setShowAddImageToFeed,
+        setShowModalTagFriendsOnPost,
+        setShowModalFeeling,
+        friendTagsPost,
+        feeling,
         images,
         setImages,
         showChooseBg,
@@ -84,7 +91,7 @@ export default function ModalCreateFeed(props: {
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
 
-            setMessage((prev:any) => prev.slice(0, start) + emoji + prev.slice(end));
+            setMessage((prev: any) => prev.slice(0, start) + emoji + prev.slice(end));
             setTimeout(
                 () =>
                     textarea.setSelectionRange(
@@ -118,8 +125,12 @@ export default function ModalCreateFeed(props: {
                             <div className={"w-[46px] h-[46px]"}>
                                 <AvatarUser path={userInfo?.avatar} />
                             </div>
-                            <div>
-                                <p className={"font-bold"}>{userInfo?.fullname}</p>
+                            <div className='flex flex-col items-start'>
+                                <p className={"font-bold"}>{userInfo?.fullname} {feeling && <span>{feeling.emoji} <span className='font-light'>is feeling</span> {feeling.text}</span>}
+                                {
+                                    friendTagsPost?.length > 0 && <span> <span className='font-light'>with</span> {friendTagsPost?.map((friend: UserInfoMD) => friend.full_name).join(', ')}</span>
+                                }
+                                </p>
                                 <div
                                     className={
                                         "flex items-center gap-1 py-1 px-2 bg-gray-300 rounded cursor-pointer"
@@ -306,6 +317,10 @@ export default function ModalCreateFeed(props: {
                                         className={
                                             "hover:bg-gray-100 rounded-full w-[36px] h-[36px]"
                                         }
+                                        onClick={() => {
+                                            setShowModalCreateFeed(false)
+                                            setShowModalTagFriendsOnPost(true)
+                                        }}
                                     >
                                         <FontAwesomeIcon
                                             icon={faUserTag}
@@ -317,6 +332,10 @@ export default function ModalCreateFeed(props: {
                                         className={
                                             "hover:bg-gray-100 rounded-full w-[36px] h-[36px]"
                                         }
+                                        onClick={() => {
+                                            setShowModalCreateFeed(false)
+                                            setShowModalFeeling(true)
+                                        }}
                                     >
                                         <FontAwesomeIcon
                                             icon={faSmile}
