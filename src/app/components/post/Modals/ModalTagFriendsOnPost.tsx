@@ -69,7 +69,7 @@ export default function ModalTagFriendsOnPost(props: {
 
     useEffect(() => {
         setFriendTags
-    },[])
+    }, [])
     return (
         <>
             <ModalDefault
@@ -117,7 +117,9 @@ export default function ModalTagFriendsOnPost(props: {
                                             friends?.length > 0 ? <>
                                                 {
                                                     friends?.map((friend: UserInfoMD, index: number) => (
-                                                        <div key={index} className="flex items-center gap-2 cursor-pointer border rounded-md p-2 hover:bg-gray-200"
+                                                        <div key={index} className={`flex items-center gap-2 cursor-pointer border-1 rounded-md p-2 hover:bg-gray-200 ${friendTags?.some((f: UserInfoMD) => f.id === friend.id)
+                                                            ? 'border-red-500'
+                                                            : 'border-gray-200'}`}
                                                             onClick={() => handleClickTagFriend(friend)}
                                                         >
                                                             <div className='w-[20px] h-[20px]'>

@@ -104,7 +104,12 @@ export default function ModalTagFriends(props: {
                                                 friends?.length > 0 ? <div className='flex flex-col gap-2 mt-2'>
                                                     {
                                                         friends?.map((friend: UserInfoMD, index: number) => (
-                                                            <div key={index} className="flex items-center gap-2 cursor-pointer border rounded-md p-2 hover:bg-gray-200"
+                                                            <div 
+                                                                key={index} 
+                                                                className={`flex items-center gap-2 cursor-pointer rounded-md p-2 hover:bg-gray-200 border-2 
+                                                                    ${currentImage?.friendTags?.some((f: UserInfoMD) => f.id === friend.id) 
+                                                                        ? 'border-red-500' 
+                                                                        : 'border-gray-200'}`}
                                                                 onClick={() => handleClickTagFriend(friend)}
                                                             >
                                                                 <div className='w-[20px] h-[20px]'>
