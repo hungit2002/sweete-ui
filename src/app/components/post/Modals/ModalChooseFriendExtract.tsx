@@ -1,8 +1,13 @@
-import { faMinusCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import {faMinusCircle, faXmark} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {useEffect, useState} from 'react';
 import AvatarUser from '../../avatar';
 import ModalDefault from '../../modal/ModalDefault';
+import {fetchFriends, fetchFriendsByParam} from "@/Services/userService";
+import {toast} from "react-toastify";
+import {useDebounce} from "use-debounce";
+import {getUserInfoLS} from "@/Utils/Storage";
+import Loading from "@/app/components/Loading/Loading";
 
 export default function ModalChooseFriendExtract(props: {
     showModalFriendExtract: boolean,
@@ -15,40 +20,56 @@ export default function ModalChooseFriendExtract(props: {
         setShowModalChooseStatusFeed
     } = props;
 
-    const [friends, setFriends] = useState<any>([
-        {
-            id: 1,
-            fullname: "hung tran duy 1",
-            email: "",
-            avatar: "",
-            phone: "099786857",
-            status: 0,
-            address: "Ha Noi",
-        },
-        {
-            id: 2,
-            fullname: "hung tran duy 2",
-            email: "",
-            avatar: "",
-            phone: "099786857",
-            status: 0,
-            address: "Ha Noi",
-        },
-        {
-            id: 3,
-            fullname: "hung tran duy 3",
-            email: "",
-            avatar: "",
-            phone: "099786857",
-            status: 0,
-            address: "Ha Noi",
-        },
-    ])
-
+    const [friends, setFriends] = useState<any>([])
+    const [textSearch, setTextSearch] = useState<string>("")
+    const [inputSearchValue] = useDebounce(textSearch, 500);
+    const [loading, setLoading] = useState<boolean>(false)
     const handleCloseModalFriendExtract = () => {
         setShowModalFriendExtract(false);
         setShowModalChooseStatusFeed(true);
     };
+    const getFriendByName = () => {
+        if (textSearch === "") {
+            setLoading(true)
+            fetchFriends(getUserInfoLS()?.id, 10)
+                .then((res: any) => {
+                        setLoading(false)
+                        if (res?.data?.meta?.code === 200) {
+                            setFriends(res?.data?.result?.map((item:any) => ({
+                                ...item,
+                                status: 0
+                            })))
+                        }
+                    }
+                ).catch((err: any) => {
+                setLoading(false)
+                console.log(err);
+                toast.error("Error when get friends")
+            })
+            return
+        }
+        setLoading(true)
+        fetchFriendsByParam(getUserInfoLS()?.id, textSearch)
+            .then((res: any) => {
+                    setLoading(false)
+                    if (res?.data?.meta?.code === 200) {
+                        setFriends(res?.data?.result?.map((item:any) => ({
+                            ...item,
+                            status: 0
+                        })))
+                    }
+                }
+            ).catch((err: any) => {
+            setLoading(false)
+            console.log(err);
+            toast.error("Error when get friends")
+        })
+
+    }
+
+    useEffect(() => {
+        getFriendByName()
+    }, [inputSearchValue])
     return (
         <>
             <ModalDefault
@@ -64,50 +85,57 @@ export default function ModalChooseFriendExtract(props: {
                                 type={"text"}
                                 placeholder={"Search for friends"}
                                 className={"w-full p-2 rounded border"}
+                                value={textSearch}
+                                onChange={(e) => setTextSearch(e.target.value)}
                             />
                         </div>
                         <h1 className="font-bold">Friends</h1>
                         <div>
-                            <ul className="my-3 flex flex-col gap-2 max-h-[400px] overflow-y-auto">
-                                {friends.map((item: any, index: number) => (
-                                    <li
-                                        className="p-2 rounded-md hover:bg-gray-100 cursor-pointer flex items-center justify-between"
-                                        key={index}
-                                        onClick={() => {
-                                            setFriends((prev: any) => [
-                                                ...prev.map((i: any) =>
-                                                    i.id === item.id
-                                                        ? { ...i, status: i.status === 0 ? 1 : 0 }
-                                                        : i
-                                                ),
-                                            ]);
-                                        }}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-[40px] h-[40px] border rounded-full">
-                                                <AvatarUser
-                                                    path={item.avatar}
-                                                />
+                            {
+                                loading ? <div>
+                                    <Loading/>
+                                </div> : <ul className="my-3 flex flex-col gap-2 max-h-[400px] overflow-y-auto">
+                                    {friends.map((item: any, index: number) => (
+                                        <li
+                                            className="p-2 rounded-md hover:bg-gray-100 cursor-pointer flex items-center justify-between"
+                                            key={index}
+                                            onClick={() => {
+                                                setFriends((prev: any) => [
+                                                    ...prev.map((i: any) =>
+                                                        i.id === item.id
+                                                            ? {...i, status: i.status === 0 ? 1 : 0}
+                                                            : i
+                                                    ),
+                                                ]);
+                                            }}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-[40px] h-[40px] border rounded-full">
+                                                    <AvatarUser
+                                                        path={item.avatar}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-bold">{item.full_name}</p>
+                                                    <p className="text-xs">{item.address}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="text-sm font-bold">{item.fullname}</p>
-                                                <p className="text-xs">{item.address}</p>
-                                            </div>
-                                        </div>
-                                        <FontAwesomeIcon
-                                            icon={faMinusCircle}
-                                            size={"lg"}
-                                            color={item.status === 0 ? "" : "red"}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
+                                            <FontAwesomeIcon
+                                                icon={faMinusCircle}
+                                                size={"lg"}
+                                                color={item.status === 0 ? "" : "red"}
+                                            />
+                                        </li>
+                                    ))}
+                                </ul>
+                            }
                         </div>
                         {friends.filter((item: any) => item.status === 1).length > 0 && (
                             <>
-                                <hr />
+                                <hr/>
                                 <div className="my-2 p-2">
-                                    <div className="border rounded-lg p-2 flex flex-col gap-2 max-h-[200px] overflow-y-auto">
+                                    <div
+                                        className="border rounded-lg p-2 flex flex-col gap-2 max-h-[200px] overflow-y-auto">
                                         <p className="text-sm font-thin">
                                             Friend don't see the feed
                                         </p>
@@ -122,16 +150,16 @@ export default function ModalChooseFriendExtract(props: {
                                                             setFriends((prev: any) => [
                                                                 ...prev.map((i: any) =>
                                                                     i.id === fb.id
-                                                                        ? { ...i, status: i.status === 0 ? 1 : 0 }
+                                                                        ? {...i, status: i.status === 0 ? 1 : 0}
                                                                         : i
                                                                 ),
                                                             ]);
                                                         }}
                                                     >
                                                         <div className="w-[20px] h-[20px] border rounded-full">
-                                                            <AvatarUser path={fb?.avatar} />
+                                                            <AvatarUser path={fb?.avatar}/>
                                                         </div>
-                                                        <p className="text-blue-800">{fb.fullname}</p>
+                                                        <p className="text-blue-800">{fb.full_name}</p>
                                                         <FontAwesomeIcon
                                                             icon={faXmark}
                                                             size={"sm"}

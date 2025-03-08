@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ModalDefault from '../../modal/ModalDefault'
 import { useDebounce } from 'use-debounce';
 import { UserInfoLS, UserInfoMD } from '@/models';
-import { fetchFriendsByParam } from '@/Services/userService';
+import { fetchFriends, fetchFriendsByParam } from '@/Services/userService';
 import { toast } from 'react-toastify';
 import AvatarUser from '../../avatar';
 import Loading from '../../Loading/Loading';
@@ -44,7 +44,19 @@ export default function ModalTagFriendsOnPost(props: {
 
     const getFriendByName = () => {
         if (textSearch === "") {
-            setFriends([])
+            setLoading(true)
+            fetchFriends(userInfo?.id,10)
+                .then((res: any) => {
+                    setLoading(false)
+                    if (res?.data?.meta?.code === 200) {
+                        setFriends(res?.data?.result)
+                    }
+                }
+                ).catch((err: any) => {
+                    setLoading(false)
+                    console.log(err);
+                    toast.error("Error when get friends")
+                })
             return
         }
         setLoading(true)
@@ -66,10 +78,6 @@ export default function ModalTagFriendsOnPost(props: {
     useEffect(() => {
         getFriendByName()
     }, [inputSearchValue])
-
-    useEffect(() => {
-        setFriendTags
-    }, [])
     return (
         <>
             <ModalDefault

@@ -1,12 +1,12 @@
 import AvatarUser from "@/app/components/avatar";
-import { UserInfoLS, UserInfoMD } from "@/models";
+import {UserInfoLS, UserInfoMD} from "@/models";
 import {
     faImages,
     faSmileBeam,
     faVideo
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useState} from "react";
 import ModalChooseFriendExtract from "./Modals/ModalChooseFriendExtract";
 import ModalChooseStatusFeed from "./Modals/ModalChooseStatusFeed";
 import ModalCreateFeed from "./Modals/ModalCreateFeed";
@@ -14,11 +14,13 @@ import ModalEditImages from "./Modals/ModalEditImages";
 import ModalTagFriends from "./Modals/ModalTagFriends";
 import ModalTagFriendsOnPost from "./Modals/ModalTagFriendsOnPost";
 import ModalFeeling from "./Modals/ModalFeeling";
+import ModalSelectGifs from "./Modals/ModalSelectgIFS";
+import ModalSelectgIFS from "./Modals/ModalSelectgIFS";
 
 export default function FormCreatePost(props: {
     userInfo: UserInfoLS
 }) {
-    const { userInfo } = props;
+    const {userInfo} = props;
 
     const [showModalCreateFeed, setShowModalCreateFeed] =
         useState<boolean>(false);
@@ -34,6 +36,8 @@ export default function FormCreatePost(props: {
         useState<boolean>(false);
     const [showModalFeeling, setShowModalFeeling] =
         useState<boolean>(false);
+    const [showModalSelectGifs, setShowModalSelectGifs] =
+        useState<boolean>(false);
 
     const [currentImage, setCurrentImage] = useState<any>(null)
 
@@ -42,15 +46,16 @@ export default function FormCreatePost(props: {
     const [selectedBg, setSelectedBg] = useState<{
         bg: string;
         text: string;
-    }>({ bg: "", text: "text-gray-900" });
+    }>({bg: "", text: "text-gray-900"});
     const [feeling, setFeeling] = useState<any>(null);
     const [message, setMessage] = useState<string>("");
+    const [location, setLocation] = useState<any>(null);
+    const [gifsPost, setGifsPost] = useState<any>([]);
     const [images, setImages] = useState<any>([]);
     const [friendTagsPost, setFriendTagsPost] = useState<UserInfoMD[]>([]);
     const handleClickCreateFeed = () => {
         setShowModalCreateFeed(true);
     };
-
     return (
         <>
             <style>
@@ -64,31 +69,31 @@ export default function FormCreatePost(props: {
             <div className="flex flex-col gap-2 shadow-md border rounded-xl px-3 py-2">
                 <div className="flex gap-2 items-center">
                     <div className="w-[40px] h-[40px] bg-infos rounded-full flex justify-center items-center">
-                        <AvatarUser path={userInfo?.avatar} />
+                        <AvatarUser path={userInfo?.avatar}/>
                     </div>
                     <div
                         onClick={handleClickCreateFeed}
                         className="text-gray-600 py-2 px-3 hover:bg-gray-200 cursor-pointer bg-infos rounded-3xl w-full"
                     >
-                        {userInfo?.fullname}
+                        {userInfo?.full_name}
                         , what are you thinking?
                     </div>
                 </div>
-                <hr />
+                <hr/>
                 <div className="grid grid-cols-3 gap-4">
                     <div
                         className="flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-2 px-3">
-                        <FontAwesomeIcon icon={faImages} size="lg" color="#58C472" />
+                        <FontAwesomeIcon icon={faImages} size="lg" color="#58C472"/>
                         <p>Image</p>
                     </div>
                     <div
                         className="flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-2 px-3">
-                        <FontAwesomeIcon icon={faVideo} size="lg" color="red" />
+                        <FontAwesomeIcon icon={faVideo} size="lg" color="red"/>
                         <p>Video</p>
                     </div>
                     <div
                         className="flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-2 px-3">
-                        <FontAwesomeIcon icon={faSmileBeam} size="lg" color="orange" />
+                        <FontAwesomeIcon icon={faSmileBeam} size="lg" color="orange"/>
                         <p>Emoji/activity</p>
                     </div>
                 </div>
@@ -114,6 +119,11 @@ export default function FormCreatePost(props: {
                     setShowModalFeeling={setShowModalFeeling}
                     feeling={feeling}
                     friendTagsPost={friendTagsPost}
+                    setLocation={setLocation}
+                    location={location}
+                    setShowModalSelectGifs={setShowModalSelectGifs}
+                    gifsPost={gifsPost}
+                    setGifsPost={setGifsPost}
                 />
             }
 
@@ -175,6 +185,15 @@ export default function FormCreatePost(props: {
                     showModalFeeling={showModalFeeling}
                     setShowModelFeeling={setShowModalFeeling}
                     setShowModalCreateFeed={setShowModalCreateFeed}
+                />
+            }
+            {
+                showModalSelectGifs && <ModalSelectgIFS
+                    showModalSelectGifs={showModalSelectGifs}
+                    setShowModalSelectGifs={setShowModalSelectGifs}
+                    setshowModalCreateFeed={setShowModalCreateFeed}
+                    setGifsPost={setGifsPost}
+                    gifsPost={gifsPost}
                 />
             }
         </>

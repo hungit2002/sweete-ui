@@ -38,7 +38,7 @@ function SideLeft({userInfo}: { userInfo: UserInfoLS }) {
                          src={userInfo?.avatar || AvatarDefault}
                          alt="User Avatar"/>
                 }
-                label={userInfo?.fullname || "Fullname"}
+                label={userInfo?.full_name || "Fullname"}
                 userID = {userInfo?.id}
             />
 

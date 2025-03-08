@@ -1,6 +1,6 @@
 export interface UserInfoLS {
     id: number;
-    fullname: string;
+    full_name: string;
     email: string;
     avatar: string;
     phone: string;

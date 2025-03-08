@@ -33,7 +33,7 @@ export default function Login() {
           localStorage.setItem("access_token", res.data.result.access_token);
           localStorage.setItem("user_info", JSON.stringify(res.data.result.user));
           setTimeout(() => {
-            redirect("/home");
+            redirect("/");
           }, 2200);
         }
       })

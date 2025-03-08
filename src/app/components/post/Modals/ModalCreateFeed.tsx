@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
-import ModalDefault from '../../modal/ModalDefault';
-import AvatarUser from '../../avatar';
+import { BACKGROUND_FEEDS, EMOJIS, Feeling } from '@/constant';
+import { UserInfoLS, UserInfoMD } from '@/models';
 import { faCaretDown, faEarth, faEllipsis, faGift, faImages, faLocationDot, faPalette, faPencil, faPlus, faSmile, faUserTag, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { BACKGROUND_FEEDS, EMOJIS, Feeling } from '@/constant';
+import axios from 'axios';
+import { useEffect, useRef } from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
-import { UserInfoLS, UserInfoMD } from '@/models';
+import AvatarUser from '../../avatar';
+import ModalDefault from '../../modal/ModalDefault';
 import PostImages from '../../PostImages/PostImages';
 
 export default function ModalCreateFeed(props: {
@@ -24,10 +25,15 @@ export default function ModalCreateFeed(props: {
     setShowAddImageToFeed: any,
     setShowModalTagFriendsOnPost: any,
     setShowModalFeeling: any,
+    setShowModalSelectGifs: any,
     feeling: Feeling,
     friendTagsPost: any,
     images: any,
     setImages: any,
+    setLocation: any,
+    location: any,
+    gifsPost: any,
+    setGifsPost: any,
 
     showChooseBg: boolean,
     setShowChooseBg: any,
@@ -51,6 +57,11 @@ export default function ModalCreateFeed(props: {
         feeling,
         images,
         setImages,
+        setLocation,
+        location,
+        gifsPost,
+        setGifsPost,
+        setShowModalSelectGifs,
         showChooseBg,
         setShowChooseBg,
         setSelectedBg
@@ -103,6 +114,27 @@ export default function ModalCreateFeed(props: {
         }
     };
 
+    const getLocal = (ip: string) => {
+        axios.get(`http://ip-api.com/json/${ip}?fields=status,message,continent,country,countryCode,region,regionName,city,district,zip,timezone,currency,isp,org`).then(res => {
+            setLocation(res.data);
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+    const getIp = () => {
+        axios.get(`https://api.ipify.org?format=json`).then(res => {
+            if (res.status === 200) {
+                getLocal(res.data.ip);
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    const handleClickCheckIn = () => {
+        getIp();
+    };
+
     useEffect(() => {
         const textarea = document.getElementById("message") as HTMLTextAreaElement;
         if (textarea) {
@@ -126,10 +158,22 @@ export default function ModalCreateFeed(props: {
                                 <AvatarUser path={userInfo?.avatar} />
                             </div>
                             <div className='flex flex-col items-start'>
-                                <p className={"font-bold"}>{userInfo?.fullname} {feeling && <span>{feeling.emoji} <span className='font-light'>is feeling</span> {feeling.text}</span>}
-                                {
-                                    friendTagsPost?.length > 0 && <span> <span className='font-light'>with</span> {friendTagsPost?.map((friend: UserInfoMD) => friend.full_name).join(', ')}</span>
-                                }
+                                <p className={"font-bold"}>{userInfo?.full_name} {feeling && <span>{feeling.emoji} <span className='font-light'>is feeling</span> {feeling.text}</span>}
+                                    {
+                                        friendTagsPost?.length > 0 && (
+                                            <span>
+                                                <span className='font-light'>with</span>
+                                                {friendTagsPost?.slice(0, 3)?.map((friend: UserInfoMD) => friend.full_name).join(', ')}
+                                                {friendTagsPost?.length > 3 && ` và ${friendTagsPost?.length - 3} người khác`}
+                                            </span>
+                                        )
+                                    }
+                                    {
+                                        location && <span>
+                                            <span className='font-light'>at </span>
+                                            {location?.city}, {location?.country}
+                                        </span>
+                                    }
                                 </p>
                                 <div
                                     className={
@@ -160,7 +204,7 @@ export default function ModalCreateFeed(props: {
                                 style={{
                                     color: selectedBg.text,
                                 }}
-                                placeholder={`${userInfo?.fullname}, what are you thinking?`}
+                                placeholder={`${userInfo?.full_name}, what are you thinking?`}
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 ref={textareaRef}
@@ -231,6 +275,20 @@ export default function ModalCreateFeed(props: {
                                             </div>
                                         }
                                     </div>
+                                </div>
+                            }
+                            {
+                                gifsPost?.length > 0 && <div className={"m-2 relative"}>
+                                    <div
+                                        onClick={() => {
+                                            setGifsPost([])
+                                        }}
+                                        className={"absolute top-2 right-2 p-2 bg-gray-100 rounded-full w-[40px] h-[40px] flex items-center justify-center cursor-pointer border z-[9999]"}>
+                                        <FontAwesomeIcon icon={faXmark} size={"sm"} />
+                                    </div>
+                                    <PostImages images={gifsPost?.map((gif:any) => ({
+                                        url: gif?.secure_url,
+                                    }))}/>
                                 </div>
                             }
                             <div className="flex items-center justify-between mt-2 px-2 py-2">
@@ -347,6 +405,7 @@ export default function ModalCreateFeed(props: {
                                         className={
                                             "hover:bg-gray-100 rounded-full w-[36px] h-[36px]"
                                         }
+                                        onClick={handleClickCheckIn}
                                     >
                                         <FontAwesomeIcon
                                             icon={faLocationDot}
@@ -358,6 +417,10 @@ export default function ModalCreateFeed(props: {
                                         className={
                                             "hover:bg-gray-100 rounded-full w-[36px] h-[36px]"
                                         }
+                                        onClick={() => {
+                                            setShowModalCreateFeed(false)
+                                            setShowModalSelectGifs(true)
+                                        }}
                                     >
                                         <FontAwesomeIcon
                                             icon={faGift}

@@ -11,7 +11,7 @@ function AvatarUser(props: {
     return (
         <img
             src={
-                `${path}` || AvatarDefault
+                `${path || AvatarDefault}`
             }
             alt="avatar"
             className={`object-cover ${shape !== "circle" ? "rounded-2" : "rounded-full"} w-100 h-100`}

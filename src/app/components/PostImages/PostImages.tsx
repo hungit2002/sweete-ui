@@ -4,7 +4,6 @@ const PostImages = (props: {
     images: any,
 }) => {
     const { images } = props;
-    
     if (!images || images.length === 0) return null; // Không hiển thị nếu không có ảnh
 
     return (

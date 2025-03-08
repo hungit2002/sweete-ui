@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const sweeteAxiosInstance = axios.create({
-  baseURL: "http://localhost:9000", // Replace with your API base URL
+const mediaService = axios.create({
+  baseURL: "http://localhost:8000", // Replace with your API base URL
   timeout: 10000, // Optional timeout for requests
   headers: {
     "Content-Type": "application/json",
@@ -9,7 +9,7 @@ const sweeteAxiosInstance = axios.create({
 });
 
 // Request interceptor to add the token to each request
-sweeteAxiosInstance.interceptors.request.use(
+mediaService.interceptors.request.use(
   (config) => {
     // Get token from localStorage
     const token =
@@ -27,4 +27,4 @@ sweeteAxiosInstance.interceptors.request.use(
   }
 );
 
-export default sweeteAxiosInstance;
+export default mediaService;
