@@ -37,7 +37,7 @@ export const LIST_STATUS_FEEDS: FEED_STATUS[] = [{
     icon: faEarth,
     label: "Public",
     detail : "Anyone on or off Sweete",
-    id : "public",
+    id : FEED_STATUS_PUBLIC,
     value: FEED_STATUS_PUBLIC
 },{
     icon: faUserFriends,
@@ -61,12 +61,14 @@ export const LIST_STATUS_FEEDS: FEED_STATUS[] = [{
     label: "Friend Specific",
     id : FEED_STATUS_FRIEND_SPECIFIC,
     value: FEED_STATUS_FRIEND_SPECIFIC
-},{
+}
+,{
     icon: faGear,
     label: "Custom",
     id : FEED_STATUS_CUSTOM,
     value: FEED_STATUS_CUSTOM
-}]
+}
+]
 export interface Feeling {
     id: number;
     emoji: string;

@@ -1,10 +1,6 @@
 import AvatarUser from "@/app/components/avatar";
 import {UserInfoLS, UserInfoMD} from "@/models";
-import {
-    faImages,
-    faSmileBeam,
-    faVideo
-} from "@fortawesome/free-solid-svg-icons";
+import {faImages, faSmileBeam, faVideo} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
 import ModalChooseFriendExtract from "./Modals/ModalChooseFriendExtract";
@@ -14,8 +10,8 @@ import ModalEditImages from "./Modals/ModalEditImages";
 import ModalTagFriends from "./Modals/ModalTagFriends";
 import ModalTagFriendsOnPost from "./Modals/ModalTagFriendsOnPost";
 import ModalFeeling from "./Modals/ModalFeeling";
-import ModalSelectGifs from "./Modals/ModalSelectgIFS";
 import ModalSelectgIFS from "./Modals/ModalSelectgIFS";
+import ModalCustomFriendSelect from "@/app/components/post/Modals/ModalCustomFriendSelect";
 
 export default function FormCreatePost(props: {
     userInfo: UserInfoLS
@@ -38,9 +34,9 @@ export default function FormCreatePost(props: {
         useState<boolean>(false);
     const [showModalSelectGifs, setShowModalSelectGifs] =
         useState<boolean>(false);
-
+    const [showModalCustomFriendSelect, setShowModalCustomFriendSelect] =
+        useState<boolean>(false);
     const [currentImage, setCurrentImage] = useState<any>(null)
-
     const [showAddImageToFeed, setShowAddImageToFeed] = useState<boolean>(false)
     const [showChooseBg, setShowChooseBg] = useState<boolean>(false);
     const [selectedBg, setSelectedBg] = useState<{
@@ -53,6 +49,12 @@ export default function FormCreatePost(props: {
     const [gifsPost, setGifsPost] = useState<any>([]);
     const [images, setImages] = useState<any>([]);
     const [friendTagsPost, setFriendTagsPost] = useState<UserInfoMD[]>([]);
+    const [statusFeed, setStatusFeed] = useState<any>({
+        type: 0,
+        name: "Public",
+        friends_expect: [],
+        friends_specific: []
+    });
     const handleClickCreateFeed = () => {
         setShowModalCreateFeed(true);
     };
@@ -124,6 +126,8 @@ export default function FormCreatePost(props: {
                     setShowModalSelectGifs={setShowModalSelectGifs}
                     gifsPost={gifsPost}
                     setGifsPost={setGifsPost}
+                    statusFeed={statusFeed}
+                    setStatusFeed={setStatusFeed}
                 />
             }
 
@@ -133,6 +137,9 @@ export default function FormCreatePost(props: {
                     setShowModalCreateFeed={setShowModalCreateFeed}
                     setShowModalChooseStatusFeed={setShowModalChooseStatusFeed}
                     setShowModalFriendExtract={setShowModalFriendExtract}
+                    statusFeed={statusFeed}
+                    setStatusFeed={setStatusFeed}
+                    setShowModalCustomFriendSelect={setShowModalCustomFriendSelect}
                 />
             }
 
@@ -141,6 +148,8 @@ export default function FormCreatePost(props: {
                     showModalFriendExtract={showModalFriendExtract}
                     setShowModalChooseStatusFeed={setShowModalChooseStatusFeed}
                     setShowModalFriendExtract={setShowModalFriendExtract}
+                    statusFeed={statusFeed}
+                    setStatusFeed={setStatusFeed}
                 />
             }
 
@@ -185,6 +194,15 @@ export default function FormCreatePost(props: {
                     showModalFeeling={showModalFeeling}
                     setShowModelFeeling={setShowModalFeeling}
                     setShowModalCreateFeed={setShowModalCreateFeed}
+                />
+            }
+            {
+                showModalCustomFriendSelect && <ModalCustomFriendSelect
+                    setShowModalCustomFriendSelect={setShowModalCustomFriendSelect}
+                    showModalCustomFriendSelect={showModalCustomFriendSelect}
+                    setShowModalChooseStatusFeed={setShowModalChooseStatusFeed}
+                    setStatusFeed={setStatusFeed}
+                    statusFeed={statusFeed}
                 />
             }
             {

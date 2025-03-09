@@ -1,13 +1,27 @@
-import { BACKGROUND_FEEDS, EMOJIS, Feeling } from '@/constant';
-import { UserInfoLS, UserInfoMD } from '@/models';
-import { faCaretDown, faEarth, faEllipsis, faGift, faImages, faLocationDot, faPalette, faPencil, faPlus, faSmile, faUserTag, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {BACKGROUND_FEEDS, EMOJIS, Feeling, LIST_STATUS_FEEDS} from '@/constant';
+import {UserInfoLS, UserInfoMD} from '@/models';
+import {
+    faCaretDown,
+    faEarth,
+    faEllipsis,
+    faGift,
+    faImages,
+    faLocationDot,
+    faPalette,
+    faPencil,
+    faPlus,
+    faSmile,
+    faUserTag,
+    faXmark
+} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import { useEffect, useRef } from 'react';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
+import {useEffect, useRef} from 'react';
+import {OverlayTrigger, Popover} from 'react-bootstrap';
 import AvatarUser from '../../avatar';
 import ModalDefault from '../../modal/ModalDefault';
 import PostImages from '../../PostImages/PostImages';
+import {ConvertBlobToFile} from "@/Utils/Image";
 
 export default function ModalCreateFeed(props: {
     userInfo: UserInfoLS,
@@ -34,6 +48,8 @@ export default function ModalCreateFeed(props: {
     location: any,
     gifsPost: any,
     setGifsPost: any,
+    statusFeed: any,
+    setStatusFeed: any,
 
     showChooseBg: boolean,
     setShowChooseBg: any,
@@ -64,7 +80,9 @@ export default function ModalCreateFeed(props: {
         setShowModalSelectGifs,
         showChooseBg,
         setShowChooseBg,
-        setSelectedBg
+        setSelectedBg,
+        statusFeed,
+        setStatusFeed
     } = props;
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const fileInputRef = useRef<any>(null);
@@ -86,10 +104,17 @@ export default function ModalCreateFeed(props: {
     const handleFileChange = (event: any) => {
         const files = event.target.files;
         if (files.length > 0) {
-            const imagesUrls = Array.from(files).map((file: any) => URL.createObjectURL(file));
+            const imagesUrls = Array.from(files).map((file: any) =>
+                (
+                    {
+                        url: URL.createObjectURL(file),
+                        name: file.name,
+                    }
+                ));
             setImages((prev: any) => [...prev, ...imagesUrls.map((url: any) => ({
                 id: Date.now(),
-                url: url,
+                url: url?.url,
+                name: url?.name,
                 note: "",
                 friendTags: []
             }))]);
@@ -135,13 +160,29 @@ export default function ModalCreateFeed(props: {
         getIp();
     };
 
+    const handleClickPost = () => {
+        const data = {
+            user_id: userInfo?.id,
+            content: message,
+            images: images?.map((image: any) => ({
+                ...image,
+                file: ConvertBlobToFile(image?.url, image?.name)
+            })),
+            friends: friendTagsPost,
+            feeling: feeling,
+            status: statusFeed,
+            checkin: location,
+            background: selectedBg,
+            gifs: gifsPost,
+        }
+        console.log(data);
+    }
     useEffect(() => {
         const textarea = document.getElementById("message") as HTMLTextAreaElement;
         if (textarea) {
             textareaRef.current = textarea;
         }
     }, []);
-
     return (
         <>
             {/* Modal create feed */}
@@ -155,14 +196,15 @@ export default function ModalCreateFeed(props: {
                     <div>
                         <div className={"flex items-center gap-2 px-3"}>
                             <div className={"w-[46px] h-[46px]"}>
-                                <AvatarUser path={userInfo?.avatar} />
+                                <AvatarUser path={userInfo?.avatar}/>
                             </div>
-                            <div className='flex flex-col items-start'>
-                                <p className={"font-bold"}>{userInfo?.full_name} {feeling && <span>{feeling.emoji} <span className='font-light'>is feeling</span> {feeling.text}</span>}
+                            <div className='flex w-full flex-col items-start'>
+                                <p className={"font-bold"}>{userInfo?.full_name} {feeling &&
+                                    <span>{feeling.emoji} <span className='font-light'>is feeling</span> {feeling.text}</span>}
                                     {
                                         friendTagsPost?.length > 0 && (
                                             <span>
-                                                <span className='font-light'>with</span>
+                                                <span className='font-light'> with </span>
                                                 {friendTagsPost?.slice(0, 3)?.map((friend: UserInfoMD) => friend.full_name).join(', ')}
                                                 {friendTagsPost?.length > 3 && ` và ${friendTagsPost?.length - 3} người khác`}
                                             </span>
@@ -170,25 +212,86 @@ export default function ModalCreateFeed(props: {
                                     }
                                     {
                                         location && <span>
-                                            <span className='font-light'>at </span>
+                                            <span className='font-light'> at </span>
                                             {location?.city}, {location?.country}
                                         </span>
                                     }
                                 </p>
-                                <div
-                                    className={
-                                        "flex items-center gap-1 py-1 px-2 bg-gray-300 rounded cursor-pointer"
-                                    }
-                                    onClick={handleClickStatusFeed}
-                                >
-                                    <FontAwesomeIcon
-                                        icon={faEarth}
-                                        size={"sm"}
-                                        color={"#777777"}
-                                    />
-                                    <p className={"text-xs font-bold"}>Public</p>
-                                    <FontAwesomeIcon icon={faCaretDown} size={"sm"} />
-                                </div>
+                                {
+                                    statusFeed?.friends_expect?.length > 0 || statusFeed?.friends_specific?.length > 0 ?
+                                        <OverlayTrigger
+                                            overlay={
+                                                <Popover id={"popover-friend-selects"}>
+                                                    <Popover.Body>
+                                                        <div>
+                                                            {
+                                                                statusFeed?.friends_expect?.length > 0 && <div>
+                                                                    <div className={"text-sm font-bold"}>Friends will not
+                                                                        see
+                                                                        your posts:
+                                                                    </div>
+                                                                    {
+                                                                        statusFeed?.friends_expect?.map((friend: UserInfoMD) => (
+                                                                            <div key={friend.id}
+                                                                                 className={"flex items-center gap-2"}>
+                                                                                <p className={"text-sm font-light"}>{friend.full_name}</p>
+                                                                            </div>
+                                                                        ))
+                                                                    }
+                                                                </div>
+                                                            }
+                                                            {
+                                                                statusFeed?.friends_specific?.length > 0 && <div>
+                                                                    <div className={"text-sm font-bold"}>Friends see your
+                                                                        posts:
+                                                                    </div>
+                                                                    {
+                                                                        statusFeed?.friends_specific?.map((friend: UserInfoMD) => (
+                                                                            <div key={friend.id}
+                                                                                 className={"flex items-center gap-2"}>
+                                                                                <p className={"text-sm font-light"}>{friend.full_name}</p>
+                                                                            </div>
+                                                                        ))
+                                                                    }
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Popover.Body>
+                                                </Popover>
+                                            } placement={"bottom-start"} trigger={['hover', 'focus']}>
+                                            <div
+                                                className={
+                                                    "flex items-center gap-1 py-1 px-2 bg-gray-300 rounded cursor-pointer"
+                                                }
+                                                onClick={handleClickStatusFeed}
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={LIST_STATUS_FEEDS?.find((feed: any) => feed?.id === statusFeed?.type)?.icon || faEarth}
+                                                    size={"sm"}
+                                                    color={"#777777"}
+                                                />
+                                                <p className={"text-xs font-bold"}>{
+                                                    statusFeed?.name
+                                                }</p>
+                                                <FontAwesomeIcon icon={faCaretDown} size={"sm"}/>
+                                            </div>
+                                        </OverlayTrigger> : <div
+                                            className={
+                                                "flex items-center gap-1 py-1 px-2 bg-gray-300 rounded cursor-pointer"
+                                            }
+                                            onClick={handleClickStatusFeed}
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={LIST_STATUS_FEEDS?.find((feed: any) => feed?.id === statusFeed?.type)?.icon || faEarth}
+                                                size={"sm"}
+                                                color={"#777777"}
+                                            />
+                                            <p className={"text-xs font-bold"}>{
+                                                statusFeed?.name
+                                            }</p>
+                                            <FontAwesomeIcon icon={faCaretDown} size={"sm"}/>
+                                        </div>
+                                }
                             </div>
                         </div>
                         <div
@@ -220,7 +323,7 @@ export default function ModalCreateFeed(props: {
                                                 setShowAddImageToFeed(false)
                                             }}
                                             className={"absolute top-5 right-5 p-2 bg-gray-100 rounded-full w-[40px] h-[40px] flex items-center justify-center cursor-pointer border z-[9999]"}>
-                                            <FontAwesomeIcon icon={faXmark} size={"sm"} />
+                                            <FontAwesomeIcon icon={faXmark} size={"sm"}/>
                                         </div>
                                         {
                                             images?.length === 0 ? <>
@@ -239,7 +342,7 @@ export default function ModalCreateFeed(props: {
                                                     <div className={"flex flex-col gap-0 items-center justify-center"}>
                                                         <div
                                                             className={"p-2 w-[40px] h-[40px] flex items-center justify-center bg-gray-300 rounded-md mb-2"}>
-                                                            <FontAwesomeIcon icon={faPlus} size={"sm"} color={"#777777"} />
+                                                            <FontAwesomeIcon icon={faPlus} size={"sm"} color={"#777777"}/>
                                                         </div>
                                                         <p className={"text-sm font-bold"}>Add images</p>
                                                         <p className={"text-xs font-light"}>Or drag and drop</p>
@@ -258,7 +361,7 @@ export default function ModalCreateFeed(props: {
                                                             className="hidden"
                                                             onChange={handleFileChange}
                                                         />
-                                                        <FontAwesomeIcon className={"me-2"} icon={faPlus} size={"sm"} />
+                                                        <FontAwesomeIcon className={"me-2"} icon={faPlus} size={"sm"}/>
                                                         <p>More Image</p>
                                                     </div>
                                                     <div
@@ -267,11 +370,11 @@ export default function ModalCreateFeed(props: {
                                                             setShowModalCreateFeed(false);
                                                             setShowModalEditImages(true);
                                                         }}>
-                                                        <FontAwesomeIcon className={"me-2"} icon={faPencil} size={"sm"} />
+                                                        <FontAwesomeIcon className={"me-2"} icon={faPencil} size={"sm"}/>
                                                         <p>Edit Images</p>
                                                     </div>
                                                 </div>
-                                                <PostImages images={images} />
+                                                <PostImages images={images}/>
                                             </div>
                                         }
                                     </div>
@@ -284,9 +387,9 @@ export default function ModalCreateFeed(props: {
                                             setGifsPost([])
                                         }}
                                         className={"absolute top-2 right-2 p-2 bg-gray-100 rounded-full w-[40px] h-[40px] flex items-center justify-center cursor-pointer border z-[9999]"}>
-                                        <FontAwesomeIcon icon={faXmark} size={"sm"} />
+                                        <FontAwesomeIcon icon={faXmark} size={"sm"}/>
                                     </div>
-                                    <PostImages images={gifsPost?.map((gif:any) => ({
+                                    <PostImages images={gifsPost?.map((gif: any) => ({
                                         url: gif?.secure_url,
                                     }))}/>
                                 </div>
@@ -299,7 +402,7 @@ export default function ModalCreateFeed(props: {
                                             setShowChooseBg(!showChooseBg);
                                         }}
                                     >
-                                        <FontAwesomeIcon icon={faPalette} color={"#197FE9"} />
+                                        <FontAwesomeIcon icon={faPalette} color={"#197FE9"}/>
                                     </button>
                                     {showChooseBg && (
                                         <div className={"flex items-center gap-1"}>
@@ -343,7 +446,7 @@ export default function ModalCreateFeed(props: {
                                         </Popover>
                                     } placement={"top"} trigger={"click"} rootClose>
                                         <div className={"cursor-pointer"}>
-                                            <FontAwesomeIcon icon={faSmile} size={"lg"} color={"orange"} />
+                                            <FontAwesomeIcon icon={faSmile} size={"lg"} color={"orange"}/>
                                         </div>
                                     </OverlayTrigger>
                                 </div>
@@ -446,6 +549,7 @@ export default function ModalCreateFeed(props: {
                             <button
                                 type="button"
                                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 w-full"
+                                onClick={handleClickPost}
                             >
                                 Post
                             </button>
