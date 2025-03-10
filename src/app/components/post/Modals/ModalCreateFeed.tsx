@@ -22,6 +22,8 @@ import AvatarUser from '../../avatar';
 import ModalDefault from '../../modal/ModalDefault';
 import PostImages from '../../PostImages/PostImages';
 import {ConvertBlobToFile} from "@/Utils/Image";
+import {uploadImage} from "@/Services/mediaServiceApi";
+import {toast} from "react-toastify";
 
 export default function ModalCreateFeed(props: {
     userInfo: UserInfoLS,
@@ -160,7 +162,7 @@ export default function ModalCreateFeed(props: {
         getIp();
     };
 
-    const handleClickPost = () => {
+    const handleClickPost = async() => {
         const data = {
             user_id: userInfo?.id,
             content: message,
@@ -175,7 +177,18 @@ export default function ModalCreateFeed(props: {
             background: selectedBg,
             gifs: gifsPost,
         }
-        console.log(data);
+        await Promise.all(data?.images?.map((image: any) => uploadImage(image?.file))).then((res) => {
+            const images = res.map((image: any) => ({
+                url: image?.data?.result?.secure_url,
+                name: image?.data?.result?.display_name,
+                size: image?.data?.result?.bytes,
+                type: image?.data?.result?.format,
+            }));
+            console.log(images);
+        }).catch(err => {
+            toast.error("Upload images error");
+            console.log(err);
+        })
     }
     useEffect(() => {
         const textarea = document.getElementById("message") as HTMLTextAreaElement;

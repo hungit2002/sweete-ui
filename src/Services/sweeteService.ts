@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const sweeteAxiosInstance = axios.create({
-  baseURL: "http://localhost:9000", // Replace with your API base URL
+  baseURL: process.env.NEXT_PUBLIC_DOMAIN_SERVICE_ROOT, // Replace with your API base URL
   timeout: 10000, // Optional timeout for requests
   headers: {
     "Content-Type": "application/json",
