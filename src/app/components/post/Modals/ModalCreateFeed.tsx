@@ -16,12 +16,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {OverlayTrigger, Popover} from 'react-bootstrap';
 import AvatarUser from '../../avatar';
 import ModalDefault from '../../modal/ModalDefault';
 import PostImages from '../../PostImages/PostImages';
-import {ConvertBlobToFile} from "@/Utils/Image";
 import {uploadImage} from "@/Services/mediaService";
 import {toast} from "react-toastify";
 import {createPost} from "@/Services/postService";
@@ -45,6 +44,7 @@ export default function ModalCreateFeed(props: {
     setShowModalSelectGifs: any,
     feeling: Feeling,
     friendTagsPost: any,
+    setFriendTagsPost: any,
     images: any,
     setImages: any,
     setLocation: any,
@@ -53,6 +53,7 @@ export default function ModalCreateFeed(props: {
     setGifsPost: any,
     statusFeed: any,
     setStatusFeed: any,
+    setFeeling: any,
 
     showChooseBg: boolean,
     setShowChooseBg: any,
@@ -73,6 +74,7 @@ export default function ModalCreateFeed(props: {
         setShowModalTagFriendsOnPost,
         setShowModalFeeling,
         friendTagsPost,
+        setFriendTagsPost,
         feeling,
         images,
         setImages,
@@ -85,8 +87,12 @@ export default function ModalCreateFeed(props: {
         setShowChooseBg,
         setSelectedBg,
         statusFeed,
-        setStatusFeed
+        setStatusFeed,
+        setFeeling
     } = props;
+
+    const [isSaving, setIsSaving] = useState<boolean>(false)
+
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const fileInputRef = useRef<any>(null);
 
@@ -166,6 +172,7 @@ export default function ModalCreateFeed(props: {
     };
 
     const handleClickPost = async () => {
+        setIsSaving(true);
         const data = {
             user_id: userInfo?.id,
             content: message,
@@ -214,19 +221,41 @@ export default function ModalCreateFeed(props: {
                     friends: image?.friendTags,
                 })),
                 friends: friendTagsPost,
-                feeling: feeling.id,
+                feeling: feeling?.id,
                 status: statusFeed,
-                checkin: JSON.stringify(location),
-                background: JSON.stringify(selectedBg),
-                gifs: data.gifs,
+                checkin: JSON.stringify(location || {}),
+                background: JSON.stringify(selectedBg || {}),
+                gifs: data?.gifs || [],
             }
             return createPost(body)
         })
             .then((res: any) => {
-                console.log(res);
+                setIsSaving(false);
+                if (res?.data?.meta?.code === 200) {
+                    toast.success("Create post success");
+
+                    setMessage("");
+                    setGifsPost([])
+                    setImages([]);
+                    setLocation(null);
+                    setFeeling(null)
+                    setFriendTagsPost([])
+                    setSelectedBg({bg: "", text: "text-gray-900"})
+                    setStatusFeed({
+                        type: 0,
+                        name: "Public",
+                        friends_expect: [],
+                        friends_specific: []
+                    })
+
+                    setShowModalCreateFeed(false);
+                } else {
+                    toast.error(res?.data?.meta?.message);
+                }
             })
             .catch(err => {
-                toast.error("Upload images error");
+                setIsSaving(false);
+                toast.error("Create post error");
                 console.log(err);
             })
     }
@@ -236,7 +265,6 @@ export default function ModalCreateFeed(props: {
             textareaRef.current = textarea;
         }
     }, []);
-    console.log(images)
     return (
         <>
             {/* Modal create feed */}
@@ -602,10 +630,13 @@ export default function ModalCreateFeed(props: {
                         <div className={"p-2"}>
                             <button
                                 type="button"
-                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 w-full"
+                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 w-full disabled:opacity-50"
                                 onClick={handleClickPost}
+                                disabled={isSaving}
                             >
-                                Post
+                                {
+                                    isSaving ? "Saving..." : "Post"
+                                }
                             </button>
                         </div>
                     </div>
