@@ -1,24 +1,11 @@
 "use client";
 import Header from "@/app/layouts/header";
 import isAuthenticated from "@/Utils/Auth";
-import {
-    faChevronLeft, faChevronRight, faEarth, faEllipsis,
-    faImage,
-    faImages,
-    faPlusCircle,
-    faSmile,
-    faSmileBeam,
-    faVideo, faXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import {redirect} from "next/navigation";
-import {useEffect, useLayoutEffect, useRef, useState} from "react";
-import News from "@/app/Modules/Home/News";
-import Feed from "@/app/Modules/Home/Feeds/Feed";
-import HomeFeeds from "../../Modules/Home/Layouts/HomeFeeds";
+import {useLayoutEffect, useState} from "react";
 import SideLeft from "@/app/Modules/Home/Layouts/SideLeft";
 import SideRight from "@/app/Modules/Home/Layouts/SideRight";
+import HomeFeeds from "@/app/Modules/Home/Layouts/HomeFeeds";
 
 export default function Home() {
     const [userInfo, setUserInfo] = useState<any>(null);

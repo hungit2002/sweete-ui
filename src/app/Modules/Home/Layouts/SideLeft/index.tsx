@@ -13,6 +13,7 @@ import {
     faVideo
 } from "@fortawesome/free-solid-svg-icons";
 import {faFacebookMessenger} from "@fortawesome/free-brands-svg-icons";
+import { AvatarDefault } from '@/constant';
 
 const menuSideLeft = [
     {icon: <FontAwesomeIcon icon={faUserFriends} size={"lg"} color={"#197FE9"}/>, label: "Friends"},
@@ -34,10 +35,11 @@ function SideLeft({userInfo}: { userInfo: UserInfoLS }) {
             <SideMenuItem
                 icon={
                     <img className="object-cover h-100 w-100 rounded-full"
-                         src={userInfo?.avatar || "https://www.svgrepo.com/show/452030/avatar-default.svg"}
+                         src={userInfo?.avatar || AvatarDefault}
                          alt="User Avatar"/>
                 }
-                label={userInfo?.fullname || "Fullname"}
+                label={userInfo?.full_name || "Fullname"}
+                userID = {userInfo?.id}
             />
 
             {/* Render danh sách menu */}

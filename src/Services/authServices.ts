@@ -1,4 +1,4 @@
-import sweeteUserAxiosInstance from "./sweeteService"
+import sweeteAxiosInstance from "./domains/sweeteAxios"
 export const login = async (account:string, password:string) => {
     let body = {}
     if (account.includes("@")) {
@@ -12,5 +12,5 @@ export const login = async (account:string, password:string) => {
             password
         }
     }
-    return await sweeteUserAxiosInstance.post('/api/v1/login',body)
+    return await sweeteAxiosInstance.post('/api/v1/login',body)
 }

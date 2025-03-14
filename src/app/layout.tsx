@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
-import "tippy.js/dist/tippy.css";
+import { Bounce, Slide, ToastContainer, Zoom } from 'react-toastify';
 
 const nunito_init = Nunito({
   subsets: ["latin"],
@@ -36,6 +36,19 @@ export default function RootLayout({
         className={`${nunito_init.className} ${geistSans.variable} ${geistMono.variable} antialiased text-black`}
       >
         {children}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          transition={Slide}
+        />
       </body>
     </html>
   );

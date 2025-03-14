@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import {UserInfoLS} from "@/models";
 import NewItem from "@/app/Modules/Home/News/NewItem";
+import { AvatarDefault } from '@/constant';
 
 function News(props: {
     userInfo: UserInfoLS;
@@ -62,7 +63,7 @@ function News(props: {
                     <div
                         className="w-100 h-[150px] rounded-t-2xl"
                         style={{
-                            backgroundImage: `url("${userInfo?.avatar || "https://www.svgrepo.com/show/452030/avatar-default.svg"}")`,
+                            backgroundImage: `url("${userInfo?.avatar || AvatarDefault}")`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
