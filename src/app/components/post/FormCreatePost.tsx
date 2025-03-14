@@ -39,6 +39,7 @@ export default function FormCreatePost(props: {
     const [currentImage, setCurrentImage] = useState<any>(null)
     const [showAddImageToFeed, setShowAddImageToFeed] = useState<boolean>(false)
     const [showChooseBg, setShowChooseBg] = useState<boolean>(false);
+
     const [selectedBg, setSelectedBg] = useState<{
         bg: string;
         text: string;
@@ -121,6 +122,7 @@ export default function FormCreatePost(props: {
                     setShowModalFeeling={setShowModalFeeling}
                     feeling={feeling}
                     friendTagsPost={friendTagsPost}
+                    setFriendTagsPost={setFriendTagsPost}
                     setLocation={setLocation}
                     location={location}
                     setShowModalSelectGifs={setShowModalSelectGifs}
@@ -128,6 +130,7 @@ export default function FormCreatePost(props: {
                     setGifsPost={setGifsPost}
                     statusFeed={statusFeed}
                     setStatusFeed={setStatusFeed}
+                    setFeeling={setFeeling}
                 />
             }
 
