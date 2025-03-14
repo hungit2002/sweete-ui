@@ -39,6 +39,30 @@ export interface FEED_STATUS {
     icon: any,
     label: string,
     detail?: string,
-    id: string,
-    value: string
+    id: number,
+    value: number
+}
+
+export interface Image {
+    url: string;
+    size: number;
+    type: string;
+    name: string;
+    note: string;
+    friends: number[];
+}
+
+export interface PostFormBody {
+    user_id: number;
+    content: string;
+    images: Image[];
+    friends: number[];
+    feeling: number;
+    status: {
+        type: number;
+        friend_expect: number[];
+        friend_only: number[];
+    },
+    background: string,
+    checkin: string,
 }

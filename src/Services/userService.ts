@@ -1,4 +1,4 @@
-import sweeteAxiosInstance from "./sweeteService"
+import sweeteAxiosInstance from "./domains/sweeteAxios"
 export const fetchUserDetail = async (userID: number) => {
     return sweeteAxiosInstance.get('/api/v1/get-user-detail?id=' + userID)
 }

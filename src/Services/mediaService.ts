@@ -1,30 +1,14 @@
-import axios from "axios";
+import mediaAxios from "./domains/mediaAxios";
 
-const mediaService = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_DOMAIN_SERVICE_MEDIA, // Replace with your API base URL
-  timeout: 10000, // Optional timeout for requests
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Request interceptor to add the token to each request
-mediaService.interceptors.request.use(
-  (config) => {
-    // Get token from localStorage
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-
-    // If token exists, add it to the Authorization header
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-export default mediaService;
+export const fetchGifs = async () => {
+    return mediaAxios.get("list-gif?folder=gifs");
+}
+export const uploadImage = async (image: File, folder: string = "") => {
+    const formData = new FormData();
+    formData.append("file", image);
+    return mediaAxios.post("upload-image", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+}

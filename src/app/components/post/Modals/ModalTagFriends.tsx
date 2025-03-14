@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import ModalDefault from '../../modal/ModalDefault'
-import { UserInfoLS, UserInfoMD } from '@/models';
-import { fetchFriendsByParam } from '@/Services/userService';
-import { toast } from 'react-toastify';
-import { useDebounce } from 'use-debounce';
+import {UserInfoLS, UserInfoMD} from '@/models';
+import {fetchFriendsByParam} from '@/Services/userService';
+import {toast} from 'react-toastify';
+import {useDebounce} from 'use-debounce';
 import Loading from '../../Loading/Loading';
 import AvatarUser from '../../avatar';
 
@@ -11,9 +11,11 @@ export default function ModalTagFriends(props: {
     userInfo: UserInfoLS,
     currentImage: any,
     setCurrentImage: any,
+    setImages: any,
     showModalTagFriends: boolean,
     setShowModalTagFriends: any,
-    setShowModalEditImages: any
+    setShowModalEditImages: any,
+    statusFeed: any
 
 }) {
 
@@ -23,7 +25,9 @@ export default function ModalTagFriends(props: {
         setCurrentImage,
         showModalTagFriends,
         setShowModalTagFriends,
-        setShowModalEditImages
+        setShowModalEditImages,
+        setImages,
+        statusFeed,
     } = props;
 
     const [friends, setFriends] = useState<UserInfoMD[]>([])
@@ -64,6 +68,7 @@ export default function ModalTagFriends(props: {
         fetchFriendsByParam(userInfo?.id, fullname).then((res) => {
             setLoading(false)
             if (res.data.meta.code === 200) {
+                console.log(res.data.result,statusFeed)
                 setFriends(res.data.result)
             }
         }).catch((err) => {
@@ -72,7 +77,6 @@ export default function ModalTagFriends(props: {
             toast.error("Error when get friends")
         })
     }
-
     useEffect(() => {
         getFriendsByName()
     }, [inputSearchValue])
@@ -99,29 +103,30 @@ export default function ModalTagFriends(props: {
                                 />
                                 <div className='overflow-y-auto h-[300px]'>
                                     {
-                                        loading ? <Loading /> : <>
+                                        loading ? <Loading/> : <>
                                             {
                                                 friends?.length > 0 ? <div className='flex flex-col gap-2 mt-2'>
-                                                    {
-                                                        friends?.map((friend: UserInfoMD, index: number) => (
-                                                            <div 
-                                                                key={index} 
-                                                                className={`flex items-center gap-2 cursor-pointer rounded-md p-2 hover:bg-gray-200 border-2 
-                                                                    ${currentImage?.friendTags?.some((f: UserInfoMD) => f.id === friend.id) 
-                                                                        ? 'border-red-500' 
+                                                        {
+                                                            friends?.map((friend: UserInfoMD, index: number) => (
+                                                                <div
+                                                                    key={index}
+                                                                    className={`flex items-center gap-2 cursor-pointer rounded-md p-2 hover:bg-gray-200 border-2 
+                                                                    ${currentImage?.friendTags?.some((f: UserInfoMD) => f.id === friend.id)
+                                                                        ? 'border-red-500'
                                                                         : 'border-gray-200'}`}
-                                                                onClick={() => handleClickTagFriend(friend)}
-                                                            >
-                                                                <div className='w-[20px] h-[20px]'>
-                                                                    <AvatarUser path={friend?.avatar} />
+                                                                    onClick={() => handleClickTagFriend(friend)}
+                                                                >
+                                                                    <div className='w-[20px] h-[20px]'>
+                                                                        <AvatarUser path={friend?.avatar}/>
+                                                                    </div>
+                                                                    <p className='text-sm'>{friend?.full_name}</p>
                                                                 </div>
-                                                                <p className='text-sm'>{friend?.full_name}</p>
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </div> : <div className='w-full h-[200px] flex items-center justify-center'>
-                                                    <p>No friend found</p>
-                                                </div>
+                                                            ))
+                                                        }
+                                                    </div> :
+                                                    <div className='w-full h-[200px] flex items-center justify-center'>
+                                                        <p>No friend found</p>
+                                                    </div>
                                             }
                                         </>
                                     }
@@ -132,18 +137,19 @@ export default function ModalTagFriends(props: {
                                         <div className='grid grid-cols-2 gap-2'>
                                             {
                                                 currentImage?.friendTags?.map((friend: UserInfoMD, index: number) => (
-                                                    <div key={index} className='flex items-center gap-2 cursor-pointer border rounded-md p-2 hover:bg-gray-200'
-                                                        onClick={() => {
-                                                            setCurrentImage((prev: any) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    friendTags: prev.friendTags.filter((f: UserInfoMD) => f.id !== friend.id)
-                                                                }
-                                                            })
-                                                        }}
+                                                    <div key={index}
+                                                         className='flex items-center gap-2 cursor-pointer border rounded-md p-2 hover:bg-gray-200'
+                                                         onClick={() => {
+                                                             setCurrentImage((prev: any) => {
+                                                                 return {
+                                                                     ...prev,
+                                                                     friendTags: prev.friendTags.filter((f: UserInfoMD) => f.id !== friend.id)
+                                                                 }
+                                                             })
+                                                         }}
                                                     >
                                                         <div className='w-[20px] h-[20px]'>
-                                                            <AvatarUser path={friend?.avatar} />
+                                                            <AvatarUser path={friend?.avatar}/>
                                                         </div>
                                                         <p className='text-sm'>{friend?.full_name}</p>
                                                     </div>
@@ -153,7 +159,8 @@ export default function ModalTagFriends(props: {
                                     </div>
                                 }
                             </div>
-                            <img src={currentImage?.url} alt={`Image`} className={"w-full h-full object-contain border rounded-md col-span-2"} />
+                            <img src={currentImage?.url} alt={`Image`}
+                                 className={"w-full h-full object-contain border rounded-md col-span-2"}/>
                         </div>
                     </div>
                 }
@@ -169,6 +176,13 @@ export default function ModalTagFriends(props: {
                             <button
                                 type="button"
                                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none w-full"
+                                onClick={() => {
+                                    setImages((prev: any) => prev.map((img: any) => img.id === currentImage.id ? {
+                                        ...img,
+                                        friendTags: currentImage?.friendTags
+                                    } : img))
+                                    handleCloseModalTagFriends()
+                                }}
                             >
                                 Save changes
                             </button>
