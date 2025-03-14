@@ -22,8 +22,9 @@ import AvatarUser from '../../avatar';
 import ModalDefault from '../../modal/ModalDefault';
 import PostImages from '../../PostImages/PostImages';
 import {ConvertBlobToFile} from "@/Utils/Image";
-import {uploadImage} from "@/Services/mediaServiceApi";
+import {uploadImage} from "@/Services/mediaService";
 import {toast} from "react-toastify";
+import {createPost} from "@/Services/postService";
 
 export default function ModalCreateFeed(props: {
     userInfo: UserInfoLS,
@@ -111,14 +112,16 @@ export default function ModalCreateFeed(props: {
                     {
                         url: URL.createObjectURL(file),
                         name: file.name,
+                        file: file,
                     }
                 ));
-            setImages((prev: any) => [...prev, ...imagesUrls.map((url: any) => ({
-                id: Date.now(),
+            setImages((prev: any) => [...prev, ...imagesUrls.map((url: any, index: number) => ({
+                id: Date.now() + (index + 1),
                 url: url?.url,
                 name: url?.name,
                 note: "",
-                friendTags: []
+                friendTags: [],
+                file: url?.file,
             }))]);
         }
     };
@@ -162,33 +165,70 @@ export default function ModalCreateFeed(props: {
         getIp();
     };
 
-    const handleClickPost = async() => {
+    const handleClickPost = async () => {
         const data = {
             user_id: userInfo?.id,
             content: message,
-            images: images?.map((image: any) => ({
-                ...image,
-                file: ConvertBlobToFile(image?.url, image?.name)
-            })),
-            friends: friendTagsPost,
+            images: images,
+            friends: friendTagsPost.map((friend: UserInfoMD) => friend.id),
             feeling: feeling,
             status: statusFeed,
             checkin: location,
             background: selectedBg,
-            gifs: gifsPost,
+            gifs: gifsPost.map((gif: any) => ({
+                url: gif?.secure_url,
+                name: gif?.display_name,
+                size: gif?.bytes,
+                type: gif?.format,
+            })),
         }
+        const mapImage: Record<number, any> = Object.fromEntries(
+            data.images.map((image: any, index: number) => [index, image])
+        )
+
         await Promise.all(data?.images?.map((image: any) => uploadImage(image?.file))).then((res) => {
-            const images = res.map((image: any) => ({
+            const images = res.map((image: any, index: number) => ({
+                index: index,
                 url: image?.data?.result?.secure_url,
                 name: image?.data?.result?.display_name,
                 size: image?.data?.result?.bytes,
                 type: image?.data?.result?.format,
             }));
-            console.log(images);
-        }).catch(err => {
-            toast.error("Upload images error");
-            console.log(err);
+            for (const image of images) {
+                mapImage[image.index] = {
+                    ...mapImage[image.index],
+                    imageResult: image,
+                }
+            }
+            return mapImage;
+        }).then((res: any) => {
+            let body = {
+                user_id: userInfo?.id,
+                content: message,
+                images: Object.values(res).map((image: any) => ({
+                    url: image?.imageResult?.url,
+                    name: image?.imageResult?.name,
+                    size: image?.imageResult?.size,
+                    type: image?.imageResult?.type,
+                    note: image?.note,
+                    friends: image?.friendTags,
+                })),
+                friends: friendTagsPost,
+                feeling: feeling.id,
+                status: statusFeed,
+                checkin: JSON.stringify(location),
+                background: JSON.stringify(selectedBg),
+                gifs: data.gifs,
+            }
+            return createPost(body)
         })
+            .then((res: any) => {
+                console.log(res);
+            })
+            .catch(err => {
+                toast.error("Upload images error");
+                console.log(err);
+            })
     }
     useEffect(() => {
         const textarea = document.getElementById("message") as HTMLTextAreaElement;
@@ -196,6 +236,7 @@ export default function ModalCreateFeed(props: {
             textareaRef.current = textarea;
         }
     }, []);
+    console.log(images)
     return (
         <>
             {/* Modal create feed */}

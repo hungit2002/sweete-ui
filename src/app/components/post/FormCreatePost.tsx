@@ -174,6 +174,8 @@ export default function FormCreatePost(props: {
                     setShowModalEditImages={setShowModalEditImages}
                     setShowModalTagFriends={setShowModalTagFriends}
                     showModalTagFriends={showModalTagFriends}
+                    setImages={setImages}
+                    statusFeed={statusFeed}
                 />
             }
 

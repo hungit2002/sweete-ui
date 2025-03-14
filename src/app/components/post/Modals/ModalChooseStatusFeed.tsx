@@ -11,7 +11,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {useForm} from 'react-hook-form';
 
 interface IFromRadio {
-    status: string;
+    status: number;
 }
 
 export default function ModalChooseStatusFeed(props: {
@@ -37,7 +37,7 @@ export default function ModalChooseStatusFeed(props: {
 
     const {register, handleSubmit, getValues, setValue} = useForm<IFromRadio>({
         defaultValues: {
-            status: FEED_STATUS_PUBLIC,
+            status: statusFeed.type,
         }
     });
 
@@ -50,11 +50,6 @@ export default function ModalChooseStatusFeed(props: {
         setShowModalCreateFeed(true);
     }
 
-    useEffect(() => {
-        if (statusFeed?.type) {
-            setValue("status", statusFeed.type);
-        }
-    }, [statusFeed, setValue]);
     return (
         <>
             {/* Modal choose status feed */}
@@ -83,22 +78,7 @@ export default function ModalChooseStatusFeed(props: {
                                         className={
                                             "flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
                                         }
-                                        htmlFor={feed.id}
-                                        onClick={() => {
-                                            setStatusFeed({
-                                                type: feed.id,
-                                                name: feed.label,
-                                                friends_expect: statusFeed?.friends_expect || [],
-                                                friends_specific: statusFeed?.friends_specific || [],
-                                            });
-                                            if (feed.id === FEED_STATUS_FRIEND_EXTRACT || feed.id === FEED_STATUS_FRIEND_SPECIFIC) {
-                                                setShowModalChooseStatusFeed(false);
-                                                setShowModalFriendExtract(true);
-                                            } else if (feed.id === FEED_STATUS_CUSTOM) {
-                                                setShowModalChooseStatusFeed(false);
-                                                setShowModalCustomFriendSelect(true);
-                                            }
-                                        }}
+                                        htmlFor={feed.id.toString()}
                                     >
                                         <div className={"flex items-center gap-3 "}>
                                             <div
@@ -119,11 +99,27 @@ export default function ModalChooseStatusFeed(props: {
                                         </div>
                                         <div>
                                             <input
-                                                id={feed.id}
-                                                type={"radio"}
+                                                id={feed.id.toString()}
+                                                type="radio"
                                                 {...register("status")}
                                                 value={feed.id}
-                                                checked={feed.id === getValues("status")}
+                                                checked={getValues("status") === feed.id}
+                                                onChange={() => {
+                                                    setStatusFeed({
+                                                        type: feed.id,
+                                                        name: feed.label,
+                                                        friends_expect: statusFeed?.friends_expect || [],
+                                                        friends_specific: statusFeed?.friends_specific || [],
+                                                    });
+                                                    setValue("status", feed.id);
+                                                    if (feed.id === FEED_STATUS_FRIEND_EXTRACT || feed.id === FEED_STATUS_FRIEND_SPECIFIC) {
+                                                        setShowModalChooseStatusFeed(false);
+                                                        setShowModalFriendExtract(true);
+                                                    } else if (feed.id === FEED_STATUS_CUSTOM) {
+                                                        setShowModalChooseStatusFeed(false);
+                                                        setShowModalCustomFriendSelect(true);
+                                                    }
+                                                }}
                                             />
                                         </div>
                                     </label>

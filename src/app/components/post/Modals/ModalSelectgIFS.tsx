@@ -1,4 +1,4 @@
-import {fetchGifs} from '@/Services/mediaServiceApi';
+import {fetchGifs} from '@/Services/mediaService';
 import {useEffect, useState} from 'react';
 import {toast} from 'react-toastify';
 import ModalDefault from '../../modal/ModalDefault';

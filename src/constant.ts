@@ -26,12 +26,12 @@ export const EMOJIS = [
     "🎶", "💖", "💔", "💕", "💗", "💙", "💚", "💛", "🖤", "💜"
 ];
 
-export const FEED_STATUS_PUBLIC = "PUBLIC";
-export const FEED_STATUS_FRIEND = "FRIEND";
-export const FEED_STATUS_FRIEND_EXTRACT = "FRIEND_EXTRACT";
-export const FEED_STATUS_ONLY_ME = "only_me";
-export const FEED_STATUS_FRIEND_SPECIFIC = "FRIEND_SPECIFIC";
-export const FEED_STATUS_CUSTOM = "CUSTOM"
+export const FEED_STATUS_PUBLIC = 0;
+export const FEED_STATUS_FRIEND = 1;
+export const FEED_STATUS_ONLY_ME = 2;
+export const FEED_STATUS_FRIEND_SPECIFIC = 3;
+export const FEED_STATUS_FRIEND_EXTRACT = 4;
+export const FEED_STATUS_CUSTOM = 5
 
 export const LIST_STATUS_FEEDS: FEED_STATUS[] = [{
     icon: faEarth,

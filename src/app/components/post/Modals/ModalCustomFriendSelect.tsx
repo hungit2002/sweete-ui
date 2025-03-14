@@ -26,7 +26,9 @@ const ModalCustomFriendSelect = (props:{
         handleCloseModalCustomFriendSelect();
     }
     useEffect(() => {
-       setStatusFeed({...statusFeed, friends_expect:[], friends_specific:[]});
+       setStatusFeed({...statusFeed, friends_expect:statusFeed?.friends_expect, friends_specific:statusFeed?.friends_specific});
+       setFriendSpecifics(statusFeed?.friends_specific);
+         setFriendExtracts(statusFeed?.friends_expect);
     },[])
     return (
         <>
