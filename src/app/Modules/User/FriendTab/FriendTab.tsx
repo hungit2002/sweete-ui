@@ -38,14 +38,14 @@ const FriendTab = (props: {
                         <div className={"grid grid-cols-1 md:grid-cols-2 gap-4"}>
                             {
                                 userInfoMD?.friends?.map((friend,index: number) =>
-                                    <div className={"flex items-center justify-between gap-3 p-2"}>
+                                    <div className={"flex items-center justify-between gap-3 p-2"} key={index}>
                                         <div className={"flex items-center gap-3"}>
                                             <div className={"w-[50px] h-[50px] rounded-2 border"}>
-                                                <AvatarUser shape={"square"} path={friend?.user?.avatar || ""}/>
+                                                <AvatarUser shape={"square"} path={friend?.avatar || ""}/>
                                             </div>
                                             <div className={"flex flex-col"}>
-                                                <p className={"font-bold text-sm hover:underline cursor-pointer"}>{friend?.user?.full_name}</p>
-                                                <p className={"font-light text-xs hover:underline cursor-pointer"}>{friend?.user?.dob ? dateToMMDDYYYY(friend?.user?.dob) : "N/A"}</p>
+                                                <p className={"font-bold text-sm hover:underline cursor-pointer"}>{friend?.full_name}</p>
+                                                <p className={"font-light text-xs hover:underline cursor-pointer"}>{friend?.dob ? dateToMMDDYYYY(friend?.dob) : "N/A"}</p>
                                             </div>
                                         </div>
                                         <div className={"px-2 py-1 hover:bg-gray-200 cursor-pointer"}>

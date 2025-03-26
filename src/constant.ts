@@ -114,3 +114,5 @@ export const FEELING_LIST = [
 ];
 
 export const AvatarDefault = "https://res.cloudinary.com/dkxleddkw/image/upload/v1741586469/uploads/dujv7ajztgx2lzybjxez.png"
+
+export const TYPE_IMAGE_GIF = "gif";

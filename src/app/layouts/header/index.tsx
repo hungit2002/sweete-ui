@@ -70,7 +70,7 @@ export default function Header() {
             <ul className="flex gap-2 items-center h-100 py-1">
                 <li className="min-w-[90px] h-100 flex items-center justify-center hover:bg-gray-200 cursor-pointer rounded-md relative">
                     <Link
-                        href="/home"
+                        href="/"
                         aria-label="Home"
                         className="flex w-100 h-100 items-center justify-center"
                     >
@@ -78,11 +78,11 @@ export default function Header() {
                             <FontAwesomeIcon
                                 icon={faHome}
                                 size="lg"
-                                color={path === "/(home)" ? "#F06060" : "#65686c"}
+                                color={path === "/" ? "#F06060" : "#65686c"}
                             />
                         </div>
                     </Link>
-                    {path === "/(home)" && (
+                    {path === "/" && (
                         <div className="absolute -bottom-0 h-[2px] bg-default w-full"></div>
                     )}
                 </li>

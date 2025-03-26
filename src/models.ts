@@ -22,7 +22,7 @@ export interface UserInfoMD {
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
-    friends: Friend[] | null;
+    friends: UserInfoMD[] | null;
 }
 
 export interface Friend {

@@ -20,3 +20,6 @@ export const fetchFriends = async (userID: number, limit: number) => {
         }
     })
 }
+export const updatePoster = async (data: any) => {
+    return sweeteAxiosInstance.post('/api/v1/update-poster', data)
+}

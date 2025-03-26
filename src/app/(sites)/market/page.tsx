@@ -4,11 +4,7 @@ import isAuthenticated from "@/Utils/Auth";
 import { redirect } from "next/navigation";
 import { useLayoutEffect } from "react";
 
-export default function Market({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function Market() {
   useLayoutEffect(() => {
     const isAuth = isAuthenticated();
     if (!isAuth) {

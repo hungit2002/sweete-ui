@@ -1,25 +1,20 @@
 import React, {useState} from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {
-    faComment,
-    faEarth,
-    faEllipsis,
-    faHeart,
-    faMessage, faShare,
-    faThumbsUp,
-    faXmark
-} from "@fortawesome/free-solid-svg-icons";
-import {faFacebookMessenger} from "@fortawesome/free-brands-svg-icons";
+import {faComment, faEarth, faEllipsis, faHeart, faShare, faThumbsUp, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {AvatarDefault, LIST_STATUS_FEEDS, TYPE_IMAGE_GIF} from "@/constant";
+import timeUtil from "@/Utils/Time";
+import {FEED_STATUS} from "@/models";
+import PostImagesFeed from "@/app/components/PostImagesFeed/PostImagesFeed";
+import {OverlayTrigger, Popover, PopoverBody} from "react-bootstrap";
+import {useAppSelector} from "@/lib/hooks";
 
 function Feed(props: {
-    text: string,
-    maxLength: number
-    hashtags?: string[],
-    images?: {
-        url: string,
-    }[],
+    maxLength: number,
+    post: Post
 }) {
-    const {text, maxLength, hashtags, images} = props;
+    const {maxLength, post} = props;
+    const friends = useAppSelector(state => state.post.posts.friends);
+
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const toggleExpand = () => {
         setIsExpanded(!isExpanded);
@@ -31,20 +26,36 @@ function Feed(props: {
                     <div className={"flex justify-between items-center"}>
                         <div className={"flex gap-2 items-center"}>
                             <div>
-                                <div className={"p-[3px] bg-default rounded-full"}>
+                                <div className={"rounded-full"}>
                                     <img
-                                        src={"https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg?semt=ais_hybrid"}
+                                        src={post.user.avatar || AvatarDefault}
                                         className={"w-[37px] h-[37px] rounded-full object-cover border"}/>
                                 </div>
                             </div>
                             <div className={"flex flex-col"}>
-                                <p className={"font-bold text-sm"}>Daniel Smith</p>
+                                <p className={"font-bold text-sm"}>{post.user.full_name}</p>
                                 <div className={"text-xs text-gray-500 flex items-center gap-1"}>
-                                    <p>3 days</p> <span>&#x2022;</span>
-                                    <FontAwesomeIcon
-                                        icon={faEarth}
-                                        size={"sm"}
-                                    />
+                                    <p>{
+                                        timeUtil(post.created_at)
+                                    }</p> <span>&#x2022;</span>
+                                    <OverlayTrigger overlay={
+                                        <Popover id={"popover-status"}>
+                                            <PopoverBody>
+                                                {
+                                                    post.friends_expect
+                                                }
+                                                {
+                                                    post.friends_view
+                                                }
+                                            </PopoverBody>
+                                        </Popover>
+                                    }>
+                                        <FontAwesomeIcon
+                                            icon={LIST_STATUS_FEEDS.find((status: FEED_STATUS) => status.value === post.status)?.icon || faEarth}
+                                            size={"sm"}
+                                            className={"cursor-pointer"}
+                                        />
+                                    </OverlayTrigger>
                                 </div>
                             </div>
                         </div>
@@ -62,9 +73,9 @@ function Feed(props: {
                     <div className={"mt-2"}>
                         <div>
                             <p className={"text-sm inline"}>
-                                {isExpanded ? text : text.slice(0, maxLength) + (text.length > maxLength ? "..." : "")}
+                                {isExpanded ? post.content : post.content.slice(0, maxLength) + (post.content.length > maxLength ? "..." : "")}
                             </p>
-                            {text.length > maxLength && (
+                            {post.content.length > maxLength && (
                                 <button
                                     onClick={toggleExpand}
                                     className="underline mt-1 mx-2 text-sm font-bold"
@@ -74,23 +85,22 @@ function Feed(props: {
                             )}
                         </div>
                         <div className="mt-2">
-                            {hashtags?.map((tag, index) => (
+                            {post.hashtags?.map((tag, index) => (
                                 <span key={index}
                                       className="text-blue-500 mr-2 text-sm font-bold hover:underline cursor-pointer">#{tag}</span>
                             ))}
                         </div>
                     </div>
                 </div>
-                <div className={"border-y px-4"}>
+                <div className={"border-y p-4"}>
                     {
-                        images?.map((image, index) => (
-                            <div key={index} className={""}>
-                                <img
-                                    src={image.url}
-                                    className={"w-full object-cover"}
-                                />
-                            </div>
-                        ))
+                        post?.images?.length > 0 &&
+                        <PostImagesFeed
+                            images={post.images?.filter((image: Image) => image.type !== TYPE_IMAGE_GIF)?.map((image: Image) => (
+                                {
+                                    url: image.path,
+                                }
+                            ))}/>
                     }
                 </div>
                 <div className={"px-2 flex items-center justify-between border-b"}>
@@ -123,15 +133,18 @@ function Feed(props: {
                     </div>
                 </div>
                 <div className={"grid grid-cols-3 px-2 py-1"}>
-                    <div className={"flex justify-center items-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-1"}>
+                    <div
+                        className={"flex justify-center items-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-1"}>
                         <FontAwesomeIcon icon={faThumbsUp} size={"lg"} className={"text-blue-500"}/>
                         Like
                     </div>
-                    <div className={"flex justify-center items-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-1"}>
+                    <div
+                        className={"flex justify-center items-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-1"}>
                         <FontAwesomeIcon icon={faComment} size={"lg"} className={"text-red-500"}/>
                         Comment
                     </div>
-                    <div className={"flex justify-center items-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-1"}>
+                    <div
+                        className={"flex justify-center items-center gap-2 hover:bg-gray-100 cursor-pointer rounded py-1"}>
                         <FontAwesomeIcon icon={faShare} size={"lg"} className={"text-yellow-500"}/>
                         Share
                     </div>
