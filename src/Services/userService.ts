@@ -20,6 +20,15 @@ export const fetchFriends = async (userID: number, limit: number) => {
         }
     })
 }
+export const getUserImages = async (userID: number, params?: { page: number; per_page: number }) => {
+    return sweeteAxiosInstance.get(`/api/v1/get-user-images/${userID}`, {
+        params: {
+            page: params?.page || 1,
+            per_page: params?.per_page || 8
+        }
+    })
+}
+
 export const updatePoster = async (data: any) => {
     return sweeteAxiosInstance.post('/api/v1/update-poster', data)
 }
