@@ -57,12 +57,13 @@ export interface PostFormBody {
     content: string;
     images: Image[];
     friends: number[];
-    feeling: number;
+    feeling?: number;
     status: {
         type: number;
-        friend_expect: number[];
-        friend_only: number[];
+        friends_expect: number[];
+        friends_specific: number[];
     },
     background: string,
     checkin: string,
+    gifs: [],
 }

@@ -3,6 +3,7 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import FriendTab from "@/app/Modules/User/FriendTab/FriendTab";
 import {UserInfoMD} from "@/models";
+import Post from "@/app/Modules/User/Post/Post";
 
 const TabsUserDetail = (props:{
     userInfoMD: UserInfoMD,
@@ -19,7 +20,7 @@ const TabsUserDetail = (props:{
             }}
         >
             <Tab eventKey="post" title="Post">
-                Tab content for Post
+                <Post/>
             </Tab>
             <Tab eventKey="introduce" title="Introduce">
                 Tab content for Introduce
